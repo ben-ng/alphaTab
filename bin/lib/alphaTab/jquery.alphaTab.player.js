@@ -50,7 +50,8 @@
         this.updatePlayer = function(song)
         {
             var songData = alphatab.midi.MidiDataProvider.getSongMidiData(song, self.factory, self.tablature.viewLayout._map);
-            if(self.midiPlayer.updateSongData)
+
+            if(self.midiPlayer.isActive())
             {
                 self.midiPlayer.updateSongData(songData);
                 $(self.playerControls).find('input').attr('disabled', false);

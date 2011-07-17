@@ -20,14 +20,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.IllegalStateException;
 import java.io.*;
 
 import javax.swing.JOptionPane;
 
 import javax.sound.midi.ControllerEventListener;
 import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
@@ -126,18 +127,33 @@ public class MidiPlayer extends JApplet
 
     public void play()
     {
-        _sequencer.start();
+    	try {
+        	_sequencer.start();
+    	}
+    	catch (IllegalStateException e) {
+    		e.printStackTrace();
+    	}
     }
 
     public void pause()
     {
-        _sequencer.stop();
+    	try {
+        	_sequencer.stop();
+    	}
+    	catch (IllegalStateException e) {
+    		e.printStackTrace();
+    	}
     }
 
     public void stop()
     {
-        _sequencer.stop();
-        _sequencer.setTickPosition(0);
+    	try {
+			_sequencer.stop();
+			_sequencer.setTickPosition(0);
+    	}
+    	catch (IllegalStateException e) {
+    		e.printStackTrace();
+    	}
     }
 	
 	public boolean isRunning()
