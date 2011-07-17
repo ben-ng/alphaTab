@@ -212,7 +212,11 @@
             {
             	// uses the jQuery scrollTo plugin to smoothly scroll the screen
                 // $.scrollTo(y-30, 300);
-                window.scrollTo(0,y-30);
+                var scrollPos=y-($(window).height()/2.5);
+                if(scrollPos<0) {
+                	scrollPos=0;
+                }
+				$('html, body').stop(true,false).animate({scrollTop: scrollPos}, 300);
             }
         }
         

@@ -44,6 +44,7 @@ public class MidiPlayer extends JApplet
     private Sequencer         _sequencer;
     private long              _lastTick;
     private String            _updateFunction;
+    private String            _jsInitFunction;
 	private int 			  _metronomeTrack;
 
     @Override
@@ -51,6 +52,8 @@ public class MidiPlayer extends JApplet
     {
         super.init();
         _updateFunction = getParameter("onTickChanged");
+        _jsInitFunction = getParameter("onAppletLoaded");
+        
         try
         {
             _sequencer = MidiSystem.getSequencer();
@@ -58,7 +61,7 @@ public class MidiPlayer extends JApplet
 
             Transmitter tickTransmitter = _sequencer.getTransmitter();
             TickNotifierReceiver tickReceiver = new TickNotifierReceiver(
-                    tickTransmitter.getReceiver());
+            tickTransmitter.getReceiver());
             tickTransmitter.setReceiver(tickReceiver);
 
             tickReceiver
@@ -80,6 +83,8 @@ public class MidiPlayer extends JApplet
                             }
                         }
                     });
+        	//This pulls up the javascript player overlay
+        	JSObject.getWindow(this).call(_jsInitFunction, new String[0]);
         }
         catch (MidiUnavailableException e)
         {
@@ -134,6 +139,11 @@ public class MidiPlayer extends JApplet
         _sequencer.stop();
         _sequencer.setTickPosition(0);
     }
+	
+	public boolean isRunning()
+	{
+		return _sequencer.isRunning();
+	}
 
     public void goTo(int tickPosition) {
         _sequencer.stop();
