@@ -47,6 +47,7 @@ public class MidiPlayer extends JApplet
     private String            _updateFunction;
     private String            _jsInitFunction;
 	private int 			  _metronomeTrack;
+	private TickNotifierReceiver _tickReceiver;
 
     @Override
     public void init()
@@ -54,18 +55,18 @@ public class MidiPlayer extends JApplet
         super.init();
         _updateFunction = getParameter("onTickChanged");
         _jsInitFunction = getParameter("onAppletLoaded");
-        
+
         try
         {
             _sequencer = MidiSystem.getSequencer();
             _sequencer.open();
 
             Transmitter tickTransmitter = _sequencer.getTransmitter();
-            TickNotifierReceiver tickReceiver = new TickNotifierReceiver(
+            _tickReceiver = new TickNotifierReceiver(
             tickTransmitter.getReceiver());
-            tickTransmitter.setReceiver(tickReceiver);
+            tickTransmitter.setReceiver(_tickReceiver);
 
-            tickReceiver
+            _tickReceiver
                     .addControllerEventListener(new ControllerEventListener()
                     {
                         @Override
@@ -93,14 +94,20 @@ public class MidiPlayer extends JApplet
         }
     }
 
-    private void notifyPosition(long tickPosition)
+    private synchronized void notifyPosition(long tickPosition)
     {
         if (_lastTick == tickPosition || _updateFunction == null) return;
-        JSObject.getWindow(this).call(_updateFunction,
-                new String[] { new Long(tickPosition).toString() });
+        try {
+	        JSObject.getWindow(this).call(_updateFunction,
+	                new String[] { new Long(tickPosition).toString() });
+	       	_lastTick = tickPosition;
+        }
+        catch(Exception e) {
+        	e.printStackTrace();
+        }
     }
 
-    public void updateSongData(String commands)
+    public synchronized void updateSongData(String commands)
     {
         try
         {
@@ -115,17 +122,17 @@ public class MidiPlayer extends JApplet
         }
     }
 
-	public void setMetronomeEnabled(boolean enabled)
+	public synchronized void setMetronomeEnabled(boolean enabled)
 	{
 		_sequencer.setTrackMute(_metronomeTrack, !enabled);
 	}
 
-	public void isMetronomeEnabled()
+	public synchronized void isMetronomeEnabled()
 	{
 		_sequencer.getTrackMute(_metronomeTrack);
 	}
 
-    public void play()
+    public synchronized void play()
     {
     	try {
         	_sequencer.start();
@@ -135,33 +142,45 @@ public class MidiPlayer extends JApplet
     	}
     }
 
-    public void pause()
+    public synchronized void pause()
     {
     	try {
+    		//Not sure if this helps or is neccesscary, sends the allSoundsOff command
+	    	for(int i=0; i<15; i++) {
+	    		ShortMessage allNotesOff = new ShortMessage();
+	    		allNotesOff.setMessage(176+i,120,0);
+				_tickReceiver.send(allNotesOff,-1);
+	    	}
         	_sequencer.stop();
     	}
     	catch (IllegalStateException e) {
     		e.printStackTrace();
+    	}
+    	catch (InvalidMidiDataException ex) {
+    		ex.printStackTrace();
+    	}
+    	catch (Exception ep) {
+    		ep.printStackTrace();
     	}
     }
 
     public void stop()
     {
     	try {
-			_sequencer.stop();
+    		this.pause();
 			_sequencer.setTickPosition(0);
     	}
     	catch (IllegalStateException e) {
     		e.printStackTrace();
     	}
     }
-	
-	public boolean isRunning()
+
+	public synchronized boolean isRunning()
 	{
 		return _sequencer.isRunning();
 	}
 
-    public void goTo(int tickPosition) {
+    public synchronized void goTo(int tickPosition) {
         _sequencer.stop();
         _sequencer.setTickPosition(tickPosition);
     }

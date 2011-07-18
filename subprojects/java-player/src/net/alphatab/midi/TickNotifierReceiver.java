@@ -52,7 +52,7 @@ public class TickNotifierReceiver implements Receiver
         }
         if (_old != null) _old.send(message, timeStamp);
     }
-    
+
     public void addControllerEventListener(ControllerEventListener listener) {
         synchronized(_controllerEventListeners) {
             _controllerEventListeners.add(listener);
