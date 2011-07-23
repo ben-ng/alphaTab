@@ -9040,6 +9040,59 @@ alphatab.model.MidiChannel.prototype.instrument = function(newInstrument) {
 	if(newInstrument != -1) this._instrument = newInstrument;
 	return this.isPercussionChannel()?0:this._instrument;
 }
+alphatab.model.MidiChannel.prototype.getInstrumentName = function() {
+	if(this._instrument != null) {
+		if(this._instrument <= 8) {
+			return "Piano";
+		}
+		if(this._instrument <= 16) {
+			return "Percussion";
+		}
+		if(this._instrument <= 24) {
+			return "Organ";
+		}
+		if(this._instrument <= 32) {
+			return "Guitar";
+		}
+		if(this._instrument <= 40) {
+			return "Brass";
+		}
+		if(this._instrument <= 48) {
+			return "Strings";
+		}
+		if(this._instrument <= 56) {
+			return "Ensemble";
+		}
+		if(this._instrument <= 64) {
+			return "Brass";
+		}
+		if(this._instrument <= 72) {
+			return "Reed";
+		}
+		if(this._instrument <= 80) {
+			return "Pipe";
+		}
+		if(this._instrument <= 88) {
+			return "Synth Lead";
+		}
+		if(this._instrument <= 96) {
+			return "Synth Pad";
+		}
+		if(this._instrument <= 104) {
+			return "Synth Effects";
+		}
+		if(this._instrument <= 112) {
+			return "Ethnic";
+		}
+		if(this._instrument <= 120) {
+			return "Percussive";
+		}
+		if(this._instrument <= 128) {
+			return "Sound Effects";
+		}
+	}
+	return "Unknown";
+}
 alphatab.model.MidiChannel.prototype.isPercussionChannel = function() {
 	return this.channel == 9;
 }

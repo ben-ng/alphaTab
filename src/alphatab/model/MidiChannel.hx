@@ -49,6 +49,61 @@ class MidiChannel
 		return isPercussionChannel() ? 0 : _instrument;
 	}
 	
+	public function getInstrumentName() : String
+	{
+		if(_instrument!=null) {
+			if(_instrument<=8) {
+				return "Piano";
+			}
+			if(_instrument<=16) {
+				return "Percussion";
+			}
+			if(_instrument<=24) {
+				return "Organ";
+			}
+			if(_instrument<=32) {
+				return "Guitar";
+			}
+			if(_instrument<=40) {
+				return "Brass";
+			}
+			if(_instrument<=48) {
+				return "Strings";
+			}
+			if(_instrument<=56) {
+				return "Ensemble";
+			}
+			if(_instrument<=64) {
+				return "Brass";
+			}
+			if(_instrument<=72) {
+				return "Reed";
+			}
+			if(_instrument<=80) {
+				return "Pipe";
+			}
+			if(_instrument<=88) {
+				return "Synth Lead";
+			}
+			if(_instrument<=96) {
+				return "Synth Pad";
+			}
+			if(_instrument<=104) {
+				return "Synth Effects";
+			}
+			if(_instrument<=112) {
+				return "Ethnic";
+			}
+			if(_instrument<=120) {
+				return "Percussive";
+			}
+			if(_instrument<=128) {
+				return "Sound Effects";
+			}
+		}
+		return "Unknown";
+	}
+	
 	public function isPercussionChannel() : Bool
 	{
 		return channel == DEFAULT_PERCUSSION_CHANNEL;
