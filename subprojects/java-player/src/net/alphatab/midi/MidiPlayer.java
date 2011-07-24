@@ -23,7 +23,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.IllegalStateException;
 import java.util.concurrent.locks.*;
+import java.util.concurrent.TimeUnit;
 import java.io.*;
+import java.lang.InterruptedException;
 
 import javax.swing.JOptionPane;
 
@@ -49,7 +51,8 @@ public class MidiPlayer extends JApplet {
 	private String _jsInitFunction;
 	private int _metronomeTrack;
 	private TickNotifierReceiver _tickReceiver;
-	private Lock _lockObj;
+	private ReentrantLock _lockObj;
+	private JSObject _win;
 
 	@Override
 	public void init() {
@@ -89,18 +92,24 @@ public class MidiPlayer extends JApplet {
 					}
 				}
 			});
-			//This pulls up the javascript player overlay
-			JSObject.getWindow(this).call(_jsInitFunction, new String[0]);
 		}
 		catch (MidiUnavailableException e) {
 			e.printStackTrace();
 		}
 	}
 
+	public void start() {
+		if(_win==null) {
+			//This pulls up the javascript player overlay
+			_win=JSObject.getWindow(this);
+			_win.eval(_jsInitFunction+"();");
+		}
+	}
+
 	private void notifyPosition(long tickPosition) {
 		if(_lastTick == tickPosition || _updateFunction == null)return;
 		try {
-			JSObject.getWindow(this).call(_updateFunction, new String[] { new Long(tickPosition).toString() });
+			_win.eval("setTimeout(function(){"+_updateFunction+"("+tickPosition+");},1);");
 			_lastTick = tickPosition;
 		}
 		catch (Exception e) {
@@ -164,30 +173,36 @@ public class MidiPlayer extends JApplet {
 		}
 	}
 
-	public void pause() {
-		_lockObj.lock();
-		try {
-			/*Not sure if this helps or is neccesscary, sends the allSoundsOff command
-			for(int i = 0; i < 15; i++) {
-				ShortMessage allNotesOff = new ShortMessage();
-				allNotesOff.setMessage(176 + i, 120, 0);
-				_tickReceiver.send(allNotesOff, -1);
+	public void pause() throws InterruptedException {
+		//Don't lock yourself, silly. Without this the thread deadlocks itself in chrome.
+		if(_lockObj.getHoldCount()==0) {
+			_lockObj.lock();
+			try {
+				/*Not sure if this helps or is necesscary, sends the allSoundsOff command
+				for(int i = 0; i < 15; i++) {
+					ShortMessage allNotesOff = new ShortMessage();
+					allNotesOff.setMessage(176 + i, 120, 0);
+					_tickReceiver.send(allNotesOff, -1);
+				}
+				*/
+				_sequencer.stop();
 			}
-			*/
-			_sequencer.stop();
+			catch (IllegalStateException e) {
+				e.printStackTrace();
+			}
+			/*
+			catch (InvalidMidiDataException ex) {
+				ex.printStackTrace();
+			}*/
+			catch (Exception ep) {
+				ep.printStackTrace();
+			}
+			finally {
+				_lockObj.unlock();
+			}
 		}
-		catch (IllegalStateException e) {
-			e.printStackTrace();
-		}
-		/*
-		catch (InvalidMidiDataException ex) {
-			ex.printStackTrace();
-		}*/
-		catch (Exception ep) {
-			ep.printStackTrace();
-		}
-		finally {
-			_lockObj.unlock();
+		else {
+			_win.eval("setTimeout(function(){document.getElementById('playButton').click();},10);"); //Postpone it!
 		}
 	}
 
