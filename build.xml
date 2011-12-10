@@ -25,6 +25,7 @@
     
     <property name="bin-js" location="${bin}/js"/>
 	<property name="lib-js" location="${bin-js}/lib/alphaTab"/>
+	<property name="lib-support" location="${bin-js}/lib/support"/>
 	<property name="haxe-js" location="${lib-js}/alphaTab.js"/>
     
     <!-- Java-Player Properties -->	
@@ -163,6 +164,8 @@
 	<target name="release-init" depends="java-player">
 		<delete dir="${release}/${DSTAMP}" />
 		<mkdir dir="${release}/${DSTAMP}" />
+		<mkdir dir="${release}/${DSTAMP}/lib" />
+		<mkdir dir="${release}/${DSTAMP}/lib/support" />
 	</target>	
 		
 	<target name="release" depends="release-init">
@@ -171,7 +174,10 @@
 		<copy todir="${release}/${DSTAMP}" overwrite="true">
 			<fileset dir="${bin-js}" />
 		</copy>
-		
+		<echo message="copying supporting files to ${release}/${DSTAMP}/lib/support"/>
+		<copy todir="${release}/${DSTAMP}/lib/support" overwrite="true">
+			<fileset dir="${lib-support}" />
+		</copy>
 		<!-- minify javascripts -->
 		<echo message="minify alphaTab.js"/>
 		<java jar="${tools}\compiler.jar" fork="true" failonerror="true">
@@ -204,14 +210,15 @@
         </delete>
         <delete file="${release}/${DSTAMP}/demo/.htaccess" />
          
-        <!-- Retrieve all samples from webserver -->
-        <echo message="loading sample pages from webserver" />
+        <!-- This is breaking builds! Not cool ;)
+        Retrieve all samples from webserver
+        <echo message="loading test pages from webserver" />
         <foreach target="receiveSample" param="samplepath">
             <path>
-                <fileset dir="${bin}/demo/samples" includes="**/*.php" />
+                <fileset dir="${bin}/demo/samples" includes="*.html" />
             </path>
         </foreach>  
-        
+         -->
         		
 		<!-- replace javascript include to minified javascript -->
 		<echo message="refreshing sample files"/>
@@ -221,7 +228,7 @@
 		</replace>
 
 	</target>
-
+<!-- This is breaking builds! Not cool ;)
     <target name="receiveSample" depends="global-init">
         <basename property="samplename" file="${samplepath}"
           suffix=".php"/>       
@@ -230,4 +237,5 @@
             dest="${release}/${DSTAMP}/demo/${samplename}.html" />
             
     </target>
+-->
 </project>
