@@ -21,12 +21,12 @@ package alphatab.midi;
  */
 class BeatData
 {
-	public var duration:Int;
-	public var start:Int;
-	
-	public function new(start:Int, duration:Int)
-	{
-		this.start = start;
-		this.duration = duration;
-	}
+    public var duration(default,default):Int;
+    public var start(default,default):Int;
+    
+    public function new(start:Int, duration:Int)
+    {
+        this.start = start;
+        this.duration = duration;
+    }
 }

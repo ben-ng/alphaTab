@@ -17,7 +17,7 @@
 package alphatab.file;
 import alphatab.model.Song;
 import alphatab.model.SongFactory;
-import alphatab.platform.BinaryReader; 
+import alphatab.io.DataStream; 
 import alphatab.platform.FileLoader;
 import alphatab.platform.PlatformFactory;
 
@@ -26,41 +26,45 @@ import alphatab.platform.PlatformFactory;
  */
 class SongLoader 
 { 
-	/**
-	 * Starts loading a song from the specified url.
-	 * @param url the url of the file to load
-	 * @param factory the object factory to use
-	 * @param success the function to call as the song is loaded. 
-	 */
-	public static function loadSong(url:String, factory:SongFactory, success:Song->Void) 
-	{
-		var loader:FileLoader = PlatformFactory.getLoader();
-		loader.loadBinary("GET", url, 
-		// success
-		function(data:BinaryReader) : Void 
-		{
-			var readers:Array<SongReader> = SongReader.availableReaders();
-			for (reader in readers) 
-			{
-				try
-				{
-					data.seek(0);
-					reader.init(data, factory);
-					var song:Song = reader.readSong();
-					success(song);
-					return;
-				}
-				catch (e:FileFormatException) 
-				{
-					continue;
-				}
-			}
-			throw new FileFormatException("No reader for requested file found");
-		},
-		// error
-		function(err:String) : Void
-		{
-			throw err;
-		});		
-	}
+    /**
+     * Starts loading a song from the specified url.
+     * @param url the url of the file to load
+     * @param factory the object factory to use
+     * @param success the function to call as the song is loaded. 
+     */
+    public static function loadSong(url:String, factory:SongFactory, success:Song->Void) 
+    {
+        var loader:FileLoader = PlatformFactory.getLoader();
+        if (loader == null)
+        {
+            throw "No file loader for you platform found";
+        }
+        loader.loadBinary("GET", url, 
+        // success
+        function(data:DataStream) : Void 
+        {
+            var readers:Array<SongReader> = SongReader.availableReaders();
+            for (reader in readers) 
+            {
+                try
+                {
+                    data.seek(0);
+                    reader.init(data, factory);
+                    var song:Song = reader.readSong();
+                    success(song);
+                    return;
+                }
+                catch (e:FileFormatException) 
+                {
+                    continue;
+                }
+            }
+            throw new FileFormatException("No reader for requested file found");
+        },
+        // error
+        function(err:String) : Void
+        {
+            throw err;
+        });        
+    }
 }

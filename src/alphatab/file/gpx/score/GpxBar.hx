@@ -15,19 +15,19 @@
  *  along with alphaTab.  If not, see <http://www.gnu.org/licenses/>.
  *  
  *  This code is based on the code of TuxGuitar. 
- *  	Copyright: J.Jørgen von Bargen, Julian Casadesus <julian@casadesus.com.ar>
- *  	http://tuxguitar.herac.com.ar/
+ *      Copyright: J.Jørgen von Bargen, Julian Casadesus <julian@casadesus.com.ar>
+ *      http://tuxguitar.herac.com.ar/
  */
 package alphatab.file.gpx.score;
 
 class GpxBar 
 {
-	public var id:Int;
-	public var voiceIds:Array<Int>;
-	public var clef:String;
-	public var simileMark:String;
-	
-	public function new()
-	{
-	}
+    public var id(default,default):Int;
+    public var voiceIds(default,default):Array<Int>;
+    public var clef(default,default):String;
+    public var simileMark(default,default):String;
+    
+    public function new()
+    {
+    }
 }

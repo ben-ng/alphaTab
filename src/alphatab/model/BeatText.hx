@@ -21,10 +21,10 @@ package alphatab.model;
  */
 class BeatText
 {
-	public var value:String;
-	public var beat:Beat;
-	
-	public function new()
-	{
-	}
+    public var value(default,default):String;
+    public var beat(default,default):Beat;
+    
+    public function new()
+    {
+    }
 }

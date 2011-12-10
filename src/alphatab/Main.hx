@@ -16,23 +16,27 @@
  */
 package alphatab;
 import alphatab.model.Song;
+import alphatab.platform.cpp.CppCLI;
 import alphatab.tablature.Tablature;
 import alphatab.tablature.model.DrawingSongModelFactory;
 import alphatab.file.alphatex.AlphaTexParser;
 import alphatab.midi.MidiDataProvider;
 import alphatab.file.alphatex.AlphaTexWriter;
 
-
 /**
  * The main entry point of this application.
  */
 class Main 
 {
-	/**
-	 * The main entry point of this application.
-	 */
-	static function main() 
-	{		
-        // nothing to do here
-	}
+    /**
+     * The main entry point of this application.
+     */
+    static function main() 
+    {        
+        #if cpp
+        new alphatab.platform.cpp.CppCLI().run();
+        #elseif neko
+        new alphatab.platform.neko.NekoCLI().run();
+        #end
+    }
 }

@@ -33,19 +33,19 @@ class BeatGroup
     private var _lastVoice:VoiceDrawing;
     
     // the first min note within this group
-	public var firstMinNote:NoteDrawing;
+    public var firstMinNote(default,default):NoteDrawing;
     // the first max note within this group
-	public var firstMaxNote:NoteDrawing;
+    public var firstMaxNote(default,default):NoteDrawing;
     // the last min note within this group
-	public var lastMinNote:NoteDrawing;
+    public var lastMinNote(default,default):NoteDrawing;
     // the last max note within this group
-	public var lastMaxNote:NoteDrawing;
+    public var lastMaxNote(default,default):NoteDrawing;
     // the overall min note within this group
-	public var minNote:NoteDrawing;
+    public var minNote(default,default):NoteDrawing;
     // the overall max note within this group
-	public var maxNote:NoteDrawing;    
+    public var maxNote(default,default):NoteDrawing;    
     
-    public var isPercussion:Bool;
+    public var isPercussion(default,default):Bool;
     
     public function new() 
     { 
@@ -60,23 +60,23 @@ class BeatGroup
     }
     
     private function getNoteValueForPosition(note:Note) 
-	{
-	   if(note.voice.beat.measure.track.isPercussionTrack) 
-	   {
-	       return PercussionMapper.getValue(note);
-	   }
-	   else
-	   {
-	       return note.realValue();
+    {
+       if(note.voice.beat.measure.track.isPercussionTrack) 
+       {
+           return PercussionMapper.getValue(note);
        }
-	}
+       else
+       {
+           return note.realValue();
+       }
+    }
     
     public function check(voice:VoiceDrawing) : Bool
     {
         if(voice.beat.measure.track.isPercussionTrack)
-	    {
-	       isPercussion = true;
-	    }
+        {
+           isPercussion = true;
+        }
         
         // allow adding if there are no voices yet
         var add:Bool = false;
@@ -104,65 +104,65 @@ class BeatGroup
     {
         var value:Int = note.realValue();
 
-		// detect the smallest note which is at the beginning of this group
-		if (firstMinNote == null || note.voice.beat.start < firstMinNote.voice.beat.start)
-		{
-			firstMinNote = note;
-		}
-		else if (note.voice.beat.start == firstMinNote.voice.beat.start)
-		{
-			if (note.realValue() < firstMinNote.realValue())
-			{
-				firstMinNote = note;
-			}
-		}
+        // detect the smallest note which is at the beginning of this group
+        if (firstMinNote == null || note.voice.beat.start < firstMinNote.voice.beat.start)
+        {
+            firstMinNote = note;
+        }
+        else if (note.voice.beat.start == firstMinNote.voice.beat.start)
+        {
+            if (note.realValue() < firstMinNote.realValue())
+            {
+                firstMinNote = note;
+            }
+        }
         
         // detect the biggest note which is at the beginning of this group
-		if (firstMaxNote == null || note.voice.beat.start < firstMaxNote.voice.beat.start)
-		{
-			firstMaxNote = note;
-		}
-		else if (note.voice.beat.start == firstMaxNote.voice.beat.start)
-		{
-			if (note.realValue() > firstMaxNote.realValue())
-			{
-				firstMaxNote = note;
-			}
-		}
+        if (firstMaxNote == null || note.voice.beat.start < firstMaxNote.voice.beat.start)
+        {
+            firstMaxNote = note;
+        }
+        else if (note.voice.beat.start == firstMaxNote.voice.beat.start)
+        {
+            if (note.realValue() > firstMaxNote.realValue())
+            {
+                firstMaxNote = note;
+            }
+        }
 
         // detect the smallest note which is at the end of this group
-		if (lastMinNote == null || note.voice.beat.start > lastMinNote.voice.beat.start)
-		{
-			lastMinNote = note;
-		}
-		else if (note.voice.beat.start == lastMinNote.voice.beat.start)
-		{
-			if (note.realValue() < lastMinNote.realValue())
-			{
-				lastMinNote = note;
-			}
-		}
+        if (lastMinNote == null || note.voice.beat.start > lastMinNote.voice.beat.start)
+        {
+            lastMinNote = note;
+        }
+        else if (note.voice.beat.start == lastMinNote.voice.beat.start)
+        {
+            if (note.realValue() < lastMinNote.realValue())
+            {
+                lastMinNote = note;
+            }
+        }
         // detect the biggest note which is at the end of this group
-		if (lastMaxNote == null || note.voice.beat.start > lastMaxNote.voice.beat.start)
-		{
-			lastMaxNote = note;
-		}
-		else if (note.voice.beat.start == lastMaxNote.voice.beat.start)
-		{
-			if (note.realValue() > lastMaxNote.realValue())
-			{
-				lastMaxNote = note;
-			}
-		}
+        if (lastMaxNote == null || note.voice.beat.start > lastMaxNote.voice.beat.start)
+        {
+            lastMaxNote = note;
+        }
+        else if (note.voice.beat.start == lastMaxNote.voice.beat.start)
+        {
+            if (note.realValue() > lastMaxNote.realValue())
+            {
+                lastMaxNote = note;
+            }
+        }
 
-		if (maxNote == null || value > maxNote.realValue())
-		{
-			maxNote = note;
-		}
-		if (minNote == null || value < minNote.realValue())
-		{
-			minNote = note;
-		}
+        if (maxNote == null || value > maxNote.realValue())
+        {
+            maxNote = note;
+        }
+        if (minNote == null || value < minNote.realValue())
+        {
+            minNote = note;
+        }
     }
     
     public static function canJoin(v1:VoiceDrawing, v2:VoiceDrawing)

@@ -21,12 +21,12 @@ package alphatab.model;
  */
 class Point
 {
-	public var x:Float;
-	public var y:Float;
-	
-	public function new(x:Float, y:Float) 
-	{
-		this.x = x;
-		this.y = y;
-	}	
+    public var x(default,default):Float;
+    public var y(default,default):Float;
+    
+    public function new(x:Float, y:Float) 
+    {
+        this.x = x;
+        this.y = y;
+    }    
 }

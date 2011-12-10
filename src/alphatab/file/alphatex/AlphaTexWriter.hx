@@ -48,9 +48,9 @@ class AlphaTexWriter
     
     /**
      * Initializes a new AlphaTexWriter.
-     * @param	track the track to export. 
+     * @param    track the track to export. 
      */
-    public function new(track:Track, voice:Int = 0) 
+    public function new(track:Track, voice:Int) 
     {
         _voice = voice;
         _track = track;
@@ -197,9 +197,9 @@ class AlphaTexWriter
     }
     
     private function parseKeySignature(keySignature:Int) : String
-	{
-		switch(keySignature) 
-		{
+    {
+        switch(keySignature) 
+        {
             case -7: return "cb";
             case -6: return "gb";
             case -5: return "db";
@@ -217,7 +217,7 @@ class AlphaTexWriter
             case 7: return "c#";
             default: return "c";
     }
-	}
+    }
 
     
     private function writeBeatEffects(beat:Beat)

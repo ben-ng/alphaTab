@@ -21,27 +21,27 @@ package alphatab.model;
  */
 class MixTableChange
 {
-	public var volume:MixTableItem;
-	public var balance:MixTableItem;
-	public var chorus:MixTableItem;
-	public var reverb:MixTableItem;
-	public var phaser:MixTableItem;
-	public var tremolo:MixTableItem;
-	public var instrument:MixTableItem;
-	public var tempoName:String;
-	public var tempo:MixTableItem;
-	public var hideTempo:Bool;
-	
-	public function new()
-	{
-		volume = new MixTableItem();
-		balance = new MixTableItem();
-		chorus = new MixTableItem();
-		reverb = new MixTableItem();
-		phaser = new MixTableItem();
-		tremolo = new MixTableItem();
-		instrument = new MixTableItem();
-		tempo = new MixTableItem();
-		hideTempo = true;
-	}
+    public var volume(default,default):MixTableItem;
+    public var balance(default,default):MixTableItem;
+    public var chorus(default,default):MixTableItem;
+    public var reverb(default,default):MixTableItem;
+    public var phaser(default,default):MixTableItem;
+    public var tremolo(default,default):MixTableItem;
+    public var instrument(default,default):MixTableItem;
+    public var tempoName(default,default):String;
+    public var tempo(default,default):MixTableItem;
+    public var hideTempo(default,default):Bool;
+    
+    public function new()
+    {
+        volume = new MixTableItem();
+        balance = new MixTableItem();
+        chorus = new MixTableItem();
+        reverb = new MixTableItem();
+        phaser = new MixTableItem();
+        tremolo = new MixTableItem();
+        instrument = new MixTableItem();
+        tempo = new MixTableItem();
+        hideTempo = true;
+    }
 }

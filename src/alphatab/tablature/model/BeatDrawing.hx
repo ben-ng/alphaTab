@@ -28,11 +28,11 @@ import alphatab.tablature.ViewLayout;
 class BeatDrawing extends Beat
 {
     // cache for storing which effects are available in this beat
-    public var effectsCache:EffectsCache;
+    public var effectsCache(default,default):EffectsCache;
     // the x position within the measure
-    public var x:Int;
+    public var x(default,default):Int;
     // the width of the beat
-    public var width:Int;
+    public var width(default,default):Int;
     
     // a boolean flag indicating whether the beat is the first one
     // within the current MeasureDrawing
@@ -60,7 +60,11 @@ class BeatDrawing extends Beat
         return measureDrawing().staveLine.x + measureDrawing().x + measureDrawing().getDefaultSpacings(layout) + x;
     }
     
+#if cpp
+    public function measureDrawing() : MeasureDrawing
+#else 
     public inline function measureDrawing() : MeasureDrawing
+#end
     {
         return cast measure;
     }
@@ -68,8 +72,8 @@ class BeatDrawing extends Beat
     private var _nextBeat:BeatDrawing;
     private var _prevBeat:BeatDrawing;    
 
-    public var minNote:NoteDrawing;
-    public var maxNote:NoteDrawing;   
+    public var minNote(default,default):NoteDrawing;
+    public var maxNote(default,default):NoteDrawing;   
     
     
     public function new(factory:SongFactory) 
@@ -247,26 +251,26 @@ class BeatDrawing extends Beat
     
     //[0] -> upper overflow, [1] -> lower overflow
     private function calculateTremoloBarOverflow(layout:ViewLayout) : Array<Int>
-	{
+    {
         var offsets = new Array<Int>();
         offsets.push(0);
         offsets.push(0);
         
         if (effect.tremoloBar.points.length == 0) return offsets;
         
-		// Find Highest and lowest point
-		var min:BendPoint = null;
-		var max:BendPoint = null;
-		for (curr in effect.tremoloBar.points)
-		{
-			if (min == null || min.value > curr.value)
-				min = curr;
-			if (max == null || max.value < curr.value)
-				max = curr;
-		}
+        // Find Highest and lowest point
+        var min:BendPoint = null;
+        var max:BendPoint = null;
+        for (curr in effect.tremoloBar.points)
+        {
+            if (min == null || min.value > curr.value)
+                min = curr;
+            if (max == null || max.value < curr.value)
+                max = curr;
+        }
 
         
-		// 6px*scale movement per value 
+        // 6px*scale movement per value 
         var note = getMinNote();
         var string = note == null ? 6 : note.string;
         var heightToTabNote:Float = (string - 1) * layout.stringSpacing;
@@ -274,7 +278,7 @@ class BeatDrawing extends Beat
         offsets[0] = Math.round((Math.abs(min.value) * (6 * layout.scale)) - heightToTabNote);
         offsets[1] = Math.round((Math.abs(max.value) * (6 * layout.scale)) - heightToTabNote);
         
-		return offsets;
-	}
+        return offsets;
+    }
     
 }

@@ -18,58 +18,142 @@ package alphatab.model;
 
 /**
  * This is the toplevel node of the song model. 
+ * It contains basic information about the stored song. 
  */
 class Song
 {
-	public var title:String;
-	public var subtitle:String;
-	public var artist:String;
-	public var album:String;
-	public var words:String;
-	public var music:String;
-	public var copyright:String;
-	public var tab:String;
-	public var instructions:String;
-	public var notice:String;
-	
-	public var lyrics:Lyrics;
-	public var pageSetup:PageSetup;
+    /**
+     * The title of the song. 
+     */
+    public var title(default,default):String;
+    
+    /**
+     * The subtitle of the song. 
+     */
+    public var subtitle(default,default):String;
+    
+    /**
+     * The artist who performs this song.
+     */
+    public var artist(default,default):String;
+    
+    /**
+     * The album of this song. 
+     */
+    public var album(default,default):String;
+    
+    /**
+     * The author of the song lyrics
+     */
+    public var words(default,default):String;
+    
+    /**
+     * The author of the music. 
+     */
+    public var music(default,default):String;
+    
+    /**
+     * The owner of the copyright of this song. 
+     */
+    public var copyright(default,default):String;
+    
+    /**
+     * The author of this tablature. 
+     */
+    public var tab(default,default):String;
+    
+    /**
+     * Additional instructions 
+     */
+    public var instructions(default,default):String;
+    
+    /**
+     * Some additional notes about the song. 
+     */
+    public var notice(default,default):String;
+    
+    /**
+     * The lyrics of this song
+     */
+    public var lyrics(default,default):Lyrics;
+    
+    /**
+     * The page setup information like aspect ratio and page size. 
+     */
+    public var pageSetup(default,default):PageSetup;
 
-	public var tempoName:String;
-	public var tempo:Int;
-	public var hideTempo:Bool;
-	
-	public var key:Int;
-	public var octave:Int;
-	
-	public var measureHeaders:Array<MeasureHeader>;
-	public var tracks:Array<Track>;
-	
-	public function new()
-	{
-		measureHeaders = new Array<MeasureHeader>();
-		tracks = new Array<Track>();
-		title = "";
-		subtitle = "";
-		artist = "";
-		album = "";
-		words = "";
-		music = "";
-		copyright = "";
-		tab = "";
-		instructions = "";
-		notice = "";
-	}
-	
-	public function addMeasureHeader(header:MeasureHeader): Void
-	{
-		header.song = this;
-		measureHeaders.push(header);
-	}
-	
-	public function addTrack(track:Track) : Void 
-	{
-		track.song = this;
-		tracks.push(track);
-	}
+    /**
+     * The name of the tempo. 
+     */
+    public var tempoName(default,default):String;
+    
+    /**
+     * The song tempo in bpm 
+     */
+    public var tempo(default,default):Int;
+    
+    /**
+     * Whether to hide the tempo on the tablature.
+     */
+    public var hideTempo(default,default):Bool;
+    
+    /**
+     * The key (signature) of the song. 
+     */
+    public var key(default,default):Int;
+    
+    /**
+     * The octave offset of the song.  
+     * default 0, becomes 8 if the song is played an octave higher (8va)
+     */
+    public var octave(default,default):Int;
+    
+    /**
+     * The list of measure headers of the song. 
+     */
+    public var measureHeaders(default,default):Array<MeasureHeader>;
+    
+    /**
+     * The tracks stored in this song. 
+     */
+    public var tracks(default,default):Array<Track>;
+    
+    /**    
+     * Initializes a new instance of the Song class. 
+     */
+    public function new()
+    {
+        measureHeaders = new Array<MeasureHeader>();
+        tracks = new Array<Track>();
+        title = "";
+        subtitle = "";
+        artist = "";
+        album = "";
+        words = "";
+        music = "";
+        copyright = "";
+        tab = "";
+        instructions = "";
+        notice = "";
+    }
+    
+    /**
+     * Adds a new measure header to the song. 
+     * @param header the measure header to add. 
+     */
+    public function addMeasureHeader(header:MeasureHeader): Void
+    {
+        header.song = this;
+        measureHeaders.push(header);
+    }
+    
+    /**
+     * Adds a new track to the song. 
+     * @param track the track to add. 
+     */
+    public function addTrack(track:Track) : Void 
+    {
+        track.song = this;
+        tracks.push(track);
+    }
 }

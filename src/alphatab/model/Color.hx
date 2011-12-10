@@ -21,26 +21,49 @@ package alphatab.model;
  */
 class Color
 {
-	public static inline var Black:Color = new Color(0, 0, 0);
-	public static inline var Red:Color = new Color(255, 0, 0);
-	
-	public var r:Int;
-	public var g:Int;
-	public var b:Int; 
-	
-	public function new(r:Int = 0, g:Int = 0, b:Int = 0)
-	{
-		this.r = r;
-		this.g = g;
-		this.b = b;
-	}
-	
-	public function toString() : String
-	{
-		var s:String = "rgb(";
-		s += Std.string(this.r) + "," ;
-		s += Std.string(this.g) + "," ;
-		s += Std.string(this.b) + ")" ;
-		return s;
-	}
+    public static inline var Black:Color = Color.fromRgb(0, 0, 0);
+    public static inline var Red:Color = Color.fromRgb(255, 0, 0);
+    
+    public var r(default,default):Int;
+    public var g(default,default):Int;
+    public var b(default,default):Int; 
+    public var a(default,default):Float; 
+    
+    private function new(r:Int, g:Int, b:Int, a:Float)
+    {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
+    }
+    
+    public function asRgbString() : String
+    {
+        if(this.a == 1) 
+        {
+            var s:String = "rgb(";
+            s += Std.string(this.r) + "," ;
+            s += Std.string(this.g) + "," ;
+            s += Std.string(this.b) + ")" ;
+            return s;
+        }
+        else {
+            var s:String = "rgba(";
+            s += Std.string(this.r) + "," ;
+            s += Std.string(this.g) + "," ;
+            s += Std.string(this.b) + "," ;
+            s += Std.string(this.a) + ")" ;
+            return s;
+        }
+    }
+    
+    public static function fromRgb(r:Int, g:Int, b:Int) : Color
+    {
+        return new Color(r, g, b, 1);
+    }
+    
+    public static function fromARgb(r:Int, g:Int, b:Int, a:Float) : Color
+    {
+        return new Color(r, g, b, a);
+    }
 }

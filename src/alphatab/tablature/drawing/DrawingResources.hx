@@ -23,55 +23,63 @@ import alphatab.model.Point;
  */
 class DrawingResources 
 {
-	public static var defaultFontHeight:Int;
-	public static var defaultFont:String;
-	public static var chordFont:String;
-	public static var timeSignatureFont:String;
-	public static var clefFont:String;
-	public static var clefFontHeight:Int;
-	public static var musicFont:String;
-	public static var tempoFont:String;
-	public static var graceFontHeight:Int;
-	public static var graceFont:String;
-	public static var noteFont:String;
-	public static var noteFontHeight:Int;
-	public static var effectFont:String;
-	public static var effectFontHeight:Int;
-	
-	public static var titleFont:String;
-	public static var subtitleFont:String;
-	public static var wordsFont:String;
-	public static var copyrightFont:String;
+    public static var defaultFontHeight(default,default):Int;
+    public static var defaultFont(default,default):String;
+    public static var chordFont(default,default):String;
+    public static var timeSignatureFont(default,default):String;
+    public static var clefFont(default,default):String;
+    public static var clefFontHeight(default,default):Int;
+    public static var musicFont(default,default):String;
+    public static var tempoFont(default,default):String;
+    public static var graceFontHeight(default,default):Int;
+    public static var graceFont(default,default):String;
+    public static var noteFont(default,default):String;
+    public static var noteFontHeight(default,default):Int;
+    public static var effectFont(default,default):String;
+    public static var effectFontHeight(default,default):Int;
+    
+    public static var titleFont(default,default):String;
+    public static var subtitleFont(default,default):String;
+    public static var wordsFont(default,default):String;
+    public static var copyrightFont(default,default):String;
 
-	public static function init(scale:Float) : Void
-	{ 
-	    var sansFont = "'Arial'";
-	    var serifFont = "'Times New Roman'";
+    public static function init(scale:Float) : Void
+    { 
+        var sansFont = "'Arial'";
+        var serifFont = "'Times New Roman'";
         
-		defaultFontHeight = Math.round(9*scale);
-		defaultFont = Std.string(defaultFontHeight) + "px " + sansFont;
-		chordFont = Std.string(9*scale) + "px " + sansFont;
-		timeSignatureFont = Std.string(20*scale) + "px " + sansFont;
-		clefFontHeight = Math.round(16 * scale);
-		clefFont = Std.string(clefFontHeight) + "px " + serifFont;
-		musicFont = Std.string(13*scale) + "px " + sansFont;
-		tempoFont = Std.string(11*scale) + "px " + sansFont;
-		graceFontHeight = Math.round(9*scale);
-		graceFont = Std.string(graceFontHeight) + "px " + sansFont;
-		noteFontHeight = Math.round(11 * scale);
-		noteFont = Std.string(noteFontHeight) + "px " + sansFont;
-		effectFontHeight = Math.round(11 * scale);
-		effectFont = "italic " + Std.string(effectFontHeight) + "px " + serifFont;
-		
-		titleFont =  Std.string(30*scale) + "px " + serifFont;
-		subtitleFont = Std.string(19 * scale) + "px " + serifFont;
-		wordsFont =  Std.string(13 * scale) + "px " + serifFont;
-		copyrightFont =  "bold " + Std.string(11 * scale) + "px " + sansFont;
-	}
-	
-	public static function getScoreNoteSize(layout:ViewLayout, full:Bool) : Point
-	{
-		var scale:Float = (full ? layout.scoreLineSpacing + 1 : layout.scoreLineSpacing) - 2;
-		return new Point(Math.round(scale * 1.3), Math.round(scale * 1.0));
-	}
+        defaultFontHeight = Math.round(9*scale);
+        defaultFont = formatFontSize(defaultFontHeight) + " " + sansFont;
+        chordFont = formatFontSize(9*scale) + " " + sansFont;
+        timeSignatureFont = formatFontSize(20*scale) + " " + sansFont;
+        clefFontHeight = Math.round(16 * scale);
+        clefFont = formatFontSize(clefFontHeight) + " " + serifFont;
+        musicFont = formatFontSize(13*scale) + " " + sansFont;
+        tempoFont = formatFontSize(11*scale) + " " + sansFont;
+        graceFontHeight = Math.round(9*scale);
+        graceFont = formatFontSize(graceFontHeight) + " " + sansFont;
+        noteFontHeight = Math.round(11 * scale);
+        noteFont = formatFontSize(noteFontHeight) + " " + sansFont;
+        effectFontHeight = Math.round(11 * scale);
+        effectFont = "italic " + formatFontSize(effectFontHeight) + " " + serifFont;
+        
+        titleFont =  formatFontSize(30*scale) + " " + serifFont;
+        subtitleFont = formatFontSize(19 * scale) + " " + serifFont;
+        wordsFont =  formatFontSize(13 * scale) + " " + serifFont;
+        copyrightFont =  "bold " + formatFontSize(11 * scale) + " " + sansFont;
+    }
+    
+    private static function formatFontSize(size:Float) 
+    {
+        var num = size;
+        num = num * Math.pow(10, 2);
+        num = Math.round( num ) / Math.pow(10, 2);
+        return Std.string(num) + "px";
+    }
+    
+    public static function getScoreNoteSize(layout:ViewLayout, full:Bool) : Point
+    {
+        var scale:Float = (full ? layout.scoreLineSpacing + 1 : layout.scoreLineSpacing) - 2;
+        return new Point(Math.round(scale * 1.3), Math.round(scale * 1.0));
+    }
 }

@@ -25,37 +25,68 @@ import alphatab.model.SongFactory;
  */
 class GraceEffect
 {
-	public var isDead:Bool;
-	public var duration:Int;
-	public var velocity:Int;
-	public var fret:Int;
-	public var isOnBeat:Bool;
-	public var transition:Int;
-	
-	public function durationTime() : Int 
-	{
-		return Math.floor((Duration.QUARTER_TIME / 16.00) * duration);	
-	}
-	
-	public function new()
-	{
-		fret = 0;
-		duration = 1;
-		velocity = Velocities.DEFAULT;
-		transition = GraceEffectTransition.None;
-		isOnBeat = false;
-		isDead = false;
-	}
+    /**
+     * Whether the grace note is a dead note
+     */
+    public var isDead(default,default):Bool;
+    /**
+     * The duration of the note effect
+     */
+    public var duration(default,default):Int;
+    /**
+     * The velocity of the note effect
+     * @see Velocities
+     */
+    public var velocity(default,default):Int;
+    /**
+     * The fret of the grace note
+     */
+    public var fret(default,default):Int;
+    /**
+     * Whether the grace note is on played on beat or before
+     */
+    public var isOnBeat(default,default):Bool;
+    /**
+     * The Transition between the grace note and the real note
+     * @see GraceNoteTransition
+     */
+    public var transition(default,default):Int;
+    
+    /**
+     * Gets the duration of the effect. 
+     */
+    public function durationTime() : Int 
+    {
+        return Math.floor((Duration.QUARTER_TIME / 16.00) * duration);    
+    }
+    
+    /**
+     * Initializes a new instance of the GraceEffect class. 
+     */
+    public function new()
+    {
+        fret = 0;
+        duration = 1;
+        velocity = Velocities.DEFAULT;
+        transition = GraceEffectTransition.None;
+        isOnBeat = false;
+        isDead = false;
+    }
 
-	public function clone(factory : SongFactory) : GraceEffect 
-	{
-		var effect:GraceEffect = factory.newGraceEffect();
-		effect.fret = fret;
-		effect.duration = duration;
-		effect.velocity= velocity;
-		effect.transition = transition;
-		effect.isOnBeat = isOnBeat;
-		effect.isDead = isDead;
-		return effect;
-	}
+    /**
+     * Creates a clone of the current GraceEffect instance.
+     * @param factory the factory for creating new instances
+     * @return a duplicate of the current instance
+     */
+    public function clone(factory : SongFactory) : GraceEffect 
+    {
+        var effect:GraceEffect = factory.newGraceEffect();
+        effect.fret = fret;
+        effect.duration = duration;
+        effect.velocity= velocity;
+        effect.transition = transition;
+        effect.isOnBeat = isOnBeat;
+        effect.isDead = isDead;
+        return effect;
+    }
 }

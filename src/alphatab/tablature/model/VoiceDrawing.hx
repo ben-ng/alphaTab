@@ -21,41 +21,50 @@ import alphatab.model.SongFactory;
 import alphatab.model.Tuplet;
 import alphatab.model.Voice;
 import alphatab.tablature.drawing.DrawingResources;
+import alphatab.tablature.staves.ScoreStave;
 import alphatab.tablature.ViewLayout;
 
 class VoiceDrawing extends Voice
 {
     // cache for storing which effects are available in this beat
-    public var effectsCache:EffectsCache;
+    public var effectsCache(default,default):EffectsCache;
     
     // is there any note displaced?
-    public var anyDisplaced:Bool;
+    public var anyDisplaced(default,default):Bool;
 
     
-    public var width:Int;
+    public var width(default,default):Int;
     
-    public var beatGroup:BeatGroup;
-    public var tripletGroup:TripletGroup;
+    public var beatGroup(default,default):BeatGroup;
+    public var tripletGroup(default,default):TripletGroup;
     
-    public var leftJoin:VoiceDrawing;
-    public var rightJoin:VoiceDrawing;
-    public var joinedType:JoinedType;
-    public var isJoinedGreaterThanQuarter:Bool;
+    public var leftJoin(default,default):VoiceDrawing;
+    public var rightJoin(default,default):VoiceDrawing;
+    public var joinedType(default,default):JoinedType;
+    public var isJoinedGreaterThanQuarter(default,default):Bool;
     
-    public var minStringNote:NoteDrawing;
-    public var maxStringNote:NoteDrawing;
+    public var minStringNote(default,default):NoteDrawing;
+    public var maxStringNote(default,default):NoteDrawing;
     
+#if cpp
+    public function beatDrawing() : BeatDrawing
+#else
     public inline function beatDrawing() : BeatDrawing
+#end
     {
         return cast beat;
     }
 
+#if cpp
+    public function measureDrawing() : MeasureDrawing
+#else
     public inline function measureDrawing() : MeasureDrawing
+#end
     {
         return beatDrawing().measureDrawing();
     }
     
-	public function new(factory:SongFactory, index:Int)
+    public function new(factory:SongFactory, index:Int)
     {
         super(factory, index);
         effectsCache = new EffectsCache();
@@ -81,8 +90,8 @@ class VoiceDrawing extends Voice
         return previousBeat != null ? cast previousBeat.voices[index] : null;
     }
     
-    public var minNote:NoteDrawing;
-    public var maxNote:NoteDrawing;   
+    public var minNote(default,default):NoteDrawing;
+    public var maxNote(default,default):NoteDrawing;   
     
     public function checkNote(note:NoteDrawing)
     {        
@@ -222,15 +231,15 @@ class VoiceDrawing extends Voice
             
             if(!Lambda.has(measureDrawing().groups, beatGroup))
             {
-            	measureDrawing().groups.push(beatGroup);            	
+                measureDrawing().groups.push(beatGroup);                
             }
         }
         
         
        
         // try to add on tripletgroup of previous beat or create a new group
-		if (duration.tuplet != null && !duration.tuplet.equals(Tuplet.NORMAL))
-		{
+        if (duration.tuplet != null && !duration.tuplet.equals(Tuplet.NORMAL))
+        {
             beatDrawing().effectsCache.triplet = true;
             measureDrawing().effectsCache.triplet = true;
             
@@ -238,16 +247,16 @@ class VoiceDrawing extends Voice
             if (previousVoice != null && previousVoice.measureDrawing().staveLine != measureDrawing().staveLine)
                 previousVoice == null;
                 
-			if (previousVoice == null || previousVoice.tripletGroup == null || !previousVoice.tripletGroup.check(this))
-			{			
-				tripletGroup = new TripletGroup(index);
-				tripletGroup.check(this);
-			}
-			else
-			{
-				tripletGroup = previousVoice.tripletGroup;
-			}
-		}
+            if (previousVoice == null || previousVoice.tripletGroup == null || !previousVoice.tripletGroup.check(this))
+            {            
+                tripletGroup = new TripletGroup(index);
+                tripletGroup.check(this);
+            }
+            else
+            {
+                tripletGroup = previousVoice.tripletGroup;
+            }
+        }
     }
     
 }

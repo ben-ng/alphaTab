@@ -17,41 +17,98 @@
 package alphatab.model;
 
 /**
- * The page setup describes how the document is rendered
+ * The page setup describes how the document is rendered. 
+ * It contains page size, margins, paddings, and how the title elements are rendered. 
+ * 
+ * Following template vars are available for defining the page texts:
+ *    %TITLE% - Will get replaced with Song.title
+ *    %SUBTITLE% - Will get replaced with Song.subtitle
+ *    %ARTIST% - Will get replaced with Song.artist
+ *    %ALBUM% - Will get replaced with Song.album
+ *    %WORDS% - Will get replaced with Song.words
+ *    %MUSIC% - Will get replaced with Song.music
+ *    %WORDSANDMUSIC% - Will get replaced with the according word and music values
+ *    %COPYRIGHT% - Will get replaced with Song.copyright
+ *    %N% - Will get replaced with the current page number (if supported by layout)
+ *    %P% - Will get replaced with the number of pages (if supported by layout)
  */
 class PageSetup
 {
-	
-	public var pageSize:Point;
-	public var pageMargin:Padding;
-	public var scoreSizeProportion:Float;
-	public var headerAndFooter:Int;
-	
-	public var title:String;
-	public var subtitle:String;
-	public var artist:String;
-	public var album:String;
-	public var words:String;
-	public var music:String;
-	public var wordsAndMusic:String;
-	public var copyright:String;
-	public var pageNumber:String;
-	
-	public function new()
-	{
-		pageSize = new Point(210,297);
-		pageMargin = new Padding(10,15,10,10);
-		scoreSizeProportion = 1;
-		headerAndFooter = HeaderFooterElements.ALL;
-		title = "%TITLE%";
-		subtitle = "%SUBTITLE%";
-		artist = "%ARTIST%";
-		album = "%ALBUM%";
-		words = "Words by %WORDS%";
-		music = "Music by %MUSIC%";
-		wordsAndMusic = "Words & Music by %WORDSMUSIC%";
-		copyright = "Copyright %COPYRIGHT%\n"  +
-				  "All Rights Reserved - International Copyright Secured";
-		pageNumber = "Page %N%/%P%";
-	}
+    /**
+     * The size of the page in millimeter x millimeter
+     */
+    public var pageSize(default,default):Point;
+    
+    /**
+     * The padding between the page border and the song contents.
+     */
+    public var pageMargin(default,default):Padding;
+    
+    /**
+     * The zoom level of the song. 
+     */
+    public var scoreSizeProportion(default,default):Float;
+    
+    /**
+     * Flags which elements of the page should get rendered.
+     */
+    public var headerAndFooter(default,default):Int;
+    
+    /**
+     * The template which defines the text of the title. 
+     */
+    public var title(default,default):String;
+    /**
+     * The template which defines the text of the subtitle. 
+     */
+    public var subtitle(default,default):String;
+    /**
+     * The template which defines the text of the artist. 
+     */
+    public var artist(default,default):String;
+    /**
+     * The template which defines the text of the album. 
+     */
+    public var album(default,default):String;
+    /**
+     * The template which defines the text of the title. 
+     */
+    public var words(default,default):String;
+    /**
+     * The template which defines the text of the music. 
+     */
+    public var music(default,default):String;
+    /**
+     * The template which defines the text of the wordsAndMusic. 
+     */
+    public var wordsAndMusic(default,default):String;
+    /**
+     * The template which defines the text of the copyright. 
+     */
+    public var copyright(default,default):String;
+    /**
+     * The template which defines the text of the pageNumber. 
+     */
+    public var pageNumber(default,default):String;
+    
+    /**
+     * Initializes a new instance of the PageSetup class. 
+     */
+    public function new()
+    {
+        pageSize = new Point(210,297);
+        pageMargin = new Padding(10,15,10,10);
+        scoreSizeProportion = 1;
+        headerAndFooter = HeaderFooterElements.ALL;
+        title = "%TITLE%";
+        subtitle = "%SUBTITLE%";
+        artist = "%ARTIST%";
+        album = "%ALBUM%";
+        words = "Words by %WORDS%";
+        music = "Music by %MUSIC%";
+        wordsAndMusic = "Words & Music by %WORDSMUSIC%";
+        copyright = "Copyright %COPYRIGHT%\n"  +
+                  "All Rights Reserved - International Copyright Secured";
+        pageNumber = "Page %N%/%P%";
+    }
 }

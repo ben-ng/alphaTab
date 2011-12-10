@@ -15,48 +15,48 @@
  *  along with alphaTab.  If not, see <http://www.gnu.org/licenses/>.
  */
 package alphatab.model;
-import alphatab.model.effects.TremoloBarEffect;
+import alphatab.model.effects.BendEffect;
 
 /**
- * 	This class contains all beat effects.
+ *     This class contains all beat effects.
  */
 class BeatEffect 
 {
-	public var stroke:BeatStroke;
-	public var hasRasgueado:Bool;
+    public var stroke(default,default):BeatStroke;
+    public var hasRasgueado(default,default):Bool;
 
-	public var pickStroke:Int;
-	public var hasPickStroke:Bool;
-	public var chord:Chord;
+    public var pickStroke(default,default):Int;
+    public var hasPickStroke(default,default):Bool;
+    public var chord(default,default):Chord;
     public function isChord() : Bool
-	{
-		return this.chord != null;
-	}
-	
+    {
+        return this.chord != null;
+    }
+    
 
-	public var fadeIn:Bool;
-	public var vibrato:Bool;
-	
-	public var tremoloBar:TremoloBarEffect;	
-	public function isTremoloBar() : Bool
-	{
-		return this.tremoloBar != null;
-	}
-	
+    public var fadeIn(default,default):Bool;
+    public var vibrato(default,default):Bool;
+    
+    public var tremoloBar(default,default):BendEffect;    
+    public function isTremoloBar() : Bool
+    {
+        return this.tremoloBar != null;
+    }
+    
 
-	public var mixTableChange:MixTableChange;
-	
-	public var tapping: Bool;
-	public var slapping: Bool;
-	public var popping: Bool;
+    public var mixTableChange(default,default):MixTableChange;
+    
+    public var tapping(default,default): Bool;
+    public var slapping(default,default): Bool;
+    public var popping(default,default): Bool;
 
-	public function new(factory:SongFactory) 
-	{
-		tapping = false;
-		slapping = false;
-		popping = false;
-		fadeIn = false;		
-		stroke = factory.newStroke();
-	}
-	
+    public function new(factory:SongFactory) 
+    {
+        tapping = false;
+        slapping = false;
+        popping = false;
+        fadeIn = false;        
+        stroke = factory.newStroke();
+    }
+    
 }

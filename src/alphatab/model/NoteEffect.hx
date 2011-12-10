@@ -18,7 +18,6 @@ package alphatab.model;
 import alphatab.model.effects.BendEffect;
 import alphatab.model.effects.GraceEffect;
 import alphatab.model.effects.HarmonicEffect;
-import alphatab.model.effects.TremoloBarEffect;
 import alphatab.model.effects.TremoloPickingEffect;
 import alphatab.model.effects.TrillEffect;
 
@@ -27,95 +26,95 @@ import alphatab.model.effects.TrillEffect;
  */
 class NoteEffect
 {
-	public function new()
-	{
-		bend = null;
-		harmonic = null;
-		grace = null;
-		trill = null;
-		tremoloPicking = null;
-		vibrato = false;
-		deadNote = false;
-		slide = false;
-		hammer = false;
-		ghostNote = false;
-		accentuatedNote = false;
-		heavyAccentuatedNote = false;
-		palmMute = false;
-		staccato = false;
-		letRing = false;
-		isFingering = false;
-	}
-	
-	public var leftHandFinger:Int;
-	public var rightHandFinger:Int;
-	public var isFingering:Bool;
+    public function new()
+    {
+        bend = null;
+        harmonic = null;
+        grace = null;
+        trill = null;
+        tremoloPicking = null;
+        vibrato = false;
+        deadNote = false;
+        slide = false;
+        hammer = false;
+        ghostNote = false;
+        accentuatedNote = false;
+        heavyAccentuatedNote = false;
+        palmMute = false;
+        staccato = false;
+        letRing = false;
+        isFingering = false;
+    }
+    
+    public var leftHandFinger(default,default):Int;
+    public var rightHandFinger(default,default):Int;
+    public var isFingering(default,default):Bool;
 
 
-	public var bend:BendEffect;
-	public function isBend() : Bool
-	{
-		return bend != null && bend.points.length != 0;
-	}
-		
-	public var harmonic:HarmonicEffect;
-	public function isHarmonic() : Bool
-	{
-		return harmonic != null;
-	}
-	
-	public var grace:GraceEffect;
-	public function isGrace() : Bool
-	{
-		return grace != null;	
-	}
-	
-	public var trill:TrillEffect;
-	public function isTrill() : Bool
-	{
-		return trill != null;
-	}
-	
-	public var tremoloPicking:TremoloPickingEffect;
-	public function isTremoloPicking() : Bool
-	{
-		return tremoloPicking != null;
-	}
-	
-	public var vibrato: Bool;
-	public var deadNote: Bool;
-	public var slideType:Int;
-	public var slide: Bool;
-	public var hammer: Bool;
-	public var ghostNote: Bool;
-	public var accentuatedNote: Bool;
-	public var heavyAccentuatedNote: Bool;
-	public var palmMute: Bool;
-	public var staccato: Bool;
-	public var letRing: Bool;
-	
-	public function clone(factory:SongFactory) : NoteEffect
-	{
-		var effect:NoteEffect = factory.newNoteEffect();
-		effect.vibrato = vibrato;
-		effect.deadNote = deadNote;
-		effect.slide = slide;
-		effect.slideType = slideType;
-		effect.hammer = hammer;
-		effect.ghostNote = ghostNote;
-		effect.accentuatedNote = accentuatedNote;
-		effect.heavyAccentuatedNote = heavyAccentuatedNote;
-		effect.palmMute = palmMute;
-		effect.staccato = staccato;
-		effect.letRing = letRing;
-		effect.isFingering = isFingering;
-		effect.leftHandFinger = leftHandFinger;
-		effect.rightHandFinger = rightHandFinger;
-		effect.bend = isBend() ? bend.clone(factory) : null;
-		effect.harmonic = isHarmonic() ? harmonic.clone(factory) : null;
-		effect.grace = isGrace() ? grace.clone(factory) : null;
-		effect.trill = isTrill() ? trill.clone(factory) : null;
-		effect.tremoloPicking = isTremoloPicking() ? tremoloPicking.clone(factory) : null;
-		return effect;
-	}
+    public var bend(default,default):BendEffect;
+    public function isBend() : Bool
+    {
+        return bend != null && bend.points.length != 0;
+    }
+        
+    public var harmonic(default,default):HarmonicEffect;
+    public function isHarmonic() : Bool
+    {
+        return harmonic != null;
+    }
+    
+    public var grace(default,default):GraceEffect;
+    public function isGrace() : Bool
+    {
+        return grace != null;    
+    }
+    
+    public var trill(default,default):TrillEffect;
+    public function isTrill() : Bool
+    {
+        return trill != null;
+    }
+    
+    public var tremoloPicking(default,default):TremoloPickingEffect;
+    public function isTremoloPicking() : Bool
+    {
+        return tremoloPicking != null;
+    }
+    
+    public var vibrato(default,default): Bool;
+    public var deadNote(default,default): Bool;
+    public var slideType(default,default):Int;
+    public var slide(default,default): Bool;
+    public var hammer(default,default): Bool;
+    public var ghostNote(default,default): Bool;
+    public var accentuatedNote(default,default): Bool;
+    public var heavyAccentuatedNote(default,default): Bool;
+    public var palmMute(default,default): Bool;
+    public var staccato(default,default): Bool;
+    public var letRing(default,default): Bool;
+    
+    public function clone(factory:SongFactory) : NoteEffect
+    {
+        var effect:NoteEffect = factory.newNoteEffect();
+        effect.vibrato = vibrato;
+        effect.deadNote = deadNote;
+        effect.slide = slide;
+        effect.slideType = slideType;
+        effect.hammer = hammer;
+        effect.ghostNote = ghostNote;
+        effect.accentuatedNote = accentuatedNote;
+        effect.heavyAccentuatedNote = heavyAccentuatedNote;
+        effect.palmMute = palmMute;
+        effect.staccato = staccato;
+        effect.letRing = letRing;
+        effect.isFingering = isFingering;
+        effect.leftHandFinger = leftHandFinger;
+        effect.rightHandFinger = rightHandFinger;
+        effect.bend = isBend() ? bend.clone(factory) : null;
+        effect.harmonic = isHarmonic() ? harmonic.clone(factory) : null;
+        effect.grace = isGrace() ? grace.clone(factory) : null;
+        effect.trill = isTrill() ? trill.clone(factory) : null;
+        effect.tremoloPicking = isTremoloPicking() ? tremoloPicking.clone(factory) : null;
+        return effect;
+    }
 }

@@ -28,10 +28,10 @@ import alphatab.tablature.ViewLayout;
  */
 class NoteDrawing extends Note 
 {   
-    public var noteSize:Point;
+    public var noteSize(default,default):Point;
     // TODO: it isn't good we store stave specific data here, 
-    public var scorePosY:Int;
-    public var displaced:Bool;
+    public var scorePosY(default,default):Int;
+    public var displaced(default,default):Bool;
     
     private var _accidental:Int;
     
@@ -43,18 +43,30 @@ class NoteDrawing extends Note
         }
         return _accidental;
     }
-    
+
+#if cpp
+    public function voiceDrawing() : VoiceDrawing
+#else
     public inline function voiceDrawing() : VoiceDrawing
+#end
     {
         return cast voice;
     }
 
+#if cpp
+    public function beatDrawing() : BeatDrawing
+#else
     public inline function beatDrawing() : BeatDrawing
+#end
     {
         return voiceDrawing().beatDrawing();
     }
 
+#if cpp
+    public function measureDrawing() : MeasureDrawing
+#else
     public inline function measureDrawing() : MeasureDrawing
+#end
     {
         return voiceDrawing().beatDrawing().measureDrawing();
     }
@@ -214,21 +226,21 @@ class NoteDrawing extends Note
     }
     
     public function calculateBendOverflow(layout:ViewLayout) : Int
-	{
-		// Find Highest bend
-		var point:BendPoint = null;
-		for (curr in effect.bend.points)
-		{
-			if (point == null || point.value < curr.value)
-				point = curr;
-		}
+    {
+        // Find Highest bend
+        var point:BendPoint = null;
+        for (curr in effect.bend.points)
+        {
+            if (point == null || point.value < curr.value)
+                point = curr;
+        }
 
-		if (point == null) return 0;
+        if (point == null) return 0;
 
-		// 6px*scale movement per value 
-		var fullHeight:Float = point.value * (6 * layout.scale);
-		var heightToTabNote:Float = (string - 1) * layout.stringSpacing;
+        // 6px*scale movement per value 
+        var fullHeight:Float = point.value * (6 * layout.scale);
+        var heightToTabNote:Float = (string - 1) * layout.stringSpacing;
 
-		return Math.round(fullHeight - heightToTabNote);
-	}
+        return Math.round(fullHeight - heightToTabNote);
+    }
 }
