@@ -58,7 +58,7 @@ class Tablature
     public var viewLayout(default,default):ViewLayout;
     public var track(default,default):Track;
     public var autoSizeWidth(default,default):Bool;
-    public var onCaretChanged(default,default):Beat->Bool->Void;
+    public var onCaretChanged(default,default):Beat->Bool->Bool->Void;
     public var onLayouted(default,default):Void->Void;
     public var onFinished(default,default):Void->Void;
     
@@ -246,7 +246,7 @@ class Tablature
             {
                 _selectedBeat = beat;
                  if (onCaretChanged != null)
-                    onCaretChanged(beat,scroll);
+                    onCaretChanged(beat, forced, scroll);
             }
         }
     }
