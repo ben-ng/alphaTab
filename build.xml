@@ -26,6 +26,7 @@
     <property name="bin-js" location="${bin}/js"/>
 	<property name="lib-js" location="${bin-js}/lib/alphaTab"/>
 	<property name="lib-support" location="${bin-js}/lib/support"/>
+	<property name="css-support" location="${bin}/css"/>
 	<property name="haxe-js" location="${lib-js}/alphaTab.js"/>
     
     <!-- Java-Player Properties -->	
@@ -174,7 +175,11 @@
 		<copy todir="${release}/${DSTAMP}" overwrite="true">
 			<fileset dir="${bin-js}" />
 		</copy>
-		<echo message="copying supporting files to ${release}/${DSTAMP}/lib/support"/>
+		<echo message="copying supporting css files to ${release}/${DSTAMP}/demo/css"/>
+		<copy todir="${release}/${DSTAMP}/demo/css" overwrite="true">
+			<fileset dir="${css-support}" />
+		</copy>
+		<echo message="copying supporting javascript files to ${release}/${DSTAMP}/lib/support"/>
 		<copy todir="${release}/${DSTAMP}/lib/support" overwrite="true">
 			<fileset dir="${lib-support}" />
 		</copy>
