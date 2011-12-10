@@ -53,6 +53,7 @@ public class MidiPlayer extends JApplet {
 	private TickNotifierReceiver _tickReceiver;
 	private ReentrantLock _lockObj;
 	private JSObject _win;
+	private boolean noMIDI=false;
 
 	@Override
 	public void init() {
@@ -94,6 +95,7 @@ public class MidiPlayer extends JApplet {
 			});
 		}
 		catch (MidiUnavailableException e) {
+			noMIDI=true;
 			e.printStackTrace();
 		}
 	}
@@ -102,7 +104,12 @@ public class MidiPlayer extends JApplet {
 		if(_win==null) {
 			//This pulls up the javascript player overlay
 			_win=JSObject.getWindow(this);
-			_win.eval(_jsInitFunction+"();");
+			if(noMIDI) {
+				_win.eval(_jsInitFunction+"(false,true);");
+			}
+			else {
+				_win.eval(_jsInitFunction+"();");
+			}
 		}
 	}
 
