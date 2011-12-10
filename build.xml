@@ -1,4 +1,5 @@
 <project name="alphaTab" default="haxe-js" basedir=".">
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
     <description>
         a buildfile for creating alphaTab releases
     </description>
