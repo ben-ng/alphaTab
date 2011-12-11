@@ -13,8 +13,8 @@
 <body>
 
 <script language = "JavaScript" type = "text/javascript" src = "lib/support/jquery.hotkeys.js"></script>
-<script language = "JavaScript" type = "text/javascript" src = "lib/alphaTab/alphaTab.js"></script>
-<script language = "JavaScript" type = "text/javascript" src = "lib/alphaTab/jquery.alphaTab.js"></script>
+<script language = "JavaScript" type = "text/javascript" src = "lib/alphaTab/alphaTab.min.js"></script>
+<script language = "JavaScript" type = "text/javascript" src = "lib/alphaTab/jquery.alphaTab.min.js"></script>
 <script language = "JavaScript" type = "text/javascript" src = "lib/support/jquery-ui-1.8.14.custom.min.js"></script>
 <script language = "JavaScript" type = "text/javascript" src = "lib/alphaTab/jquery.alphaTab.player.js"></script>
 <script language = "JavaScript" type = "text/javascript" src = "lib/support/deployJava.js"></script>
@@ -37,6 +37,8 @@
 	}
 	function onAppletLoaded(noplayer,nomidi) {
 		$("#midiplayer").attr("width",0).attr("height",0);
+		document.getElementById("midiplayer").setIsMac(BrowserDetect.OS==="Mac");
+		
 		api = $('div.alphaTab').alphaTab(
 			{
 				file: "demo/files/FadeToBlack.gp4",
@@ -46,7 +48,7 @@
 				//staves: ["tablature"],
 				error: 'Applet loaded, working on the file now...',
 	            loadCallback: (
-	            	noplayer||nomidi ?
+	            	(noplayer||nomidi) ?
 	            	function(song) {
 						var playerControls = $('<div class="jqueryui fixedControls player"></div>');
 						var tracks = $('<select id="tracks"></select>');
@@ -110,6 +112,11 @@
 		api.updateCaret(tickPosition);
 		return true;
 	}
+	function onSequenceStopped(tickPosition) {
+		$('#playButton').click();
+		api.updateCaret(tickPosition);
+		return true;
+	}
 	// create applet
 	var attributes =
 		{
@@ -123,32 +130,23 @@
 	var parameters =
 		{
 			onTickChanged: 'onTickChanged',
-			onAppletLoaded: 'onAppletLoaded'
+			onAppletLoaded: 'onAppletLoaded',
+			onSequenceStop: 'onSequenceStopped'
 		};
 	var version = '1.5.0+';
 	function startJREInstall() {
 		deployJava.setInstallerType("online");
 		deployJava.installLatestJRE();
 	}
-	function macOverride() {
-		createCookie("macOverride","true"); //Cookie will expire at end of session
-		location.reload(true);
-	}
-	if(BrowserDetect.OS=="Mac" && readCookie("macOverride")!=="true") {
-		alert("Mac detected!");
-		onAppletLoaded(true,true); //This will load alphatab without the player
+	if(deployJava.versionCheck(version)===true) {
+		if(deployJava.isPluginInstalled()===false) { //Giving the applet some dimensions so that browser can give instructions
+			attributes.width=250;
+			attributes.height=250;
+		}
+		deployJava.runApplet(attributes, parameters);
 	}
 	else {
-		if(deployJava.versionCheck(version)===true) {
-			if(deployJava.isPluginInstalled()===false) { //Giving the applet some dimensions so that browser can give instructions
-				attributes.width=250;
-				attributes.height=250;
-			}
-			deployJava.runApplet(attributes, parameters);
-		}
-		else {
-			onAppletLoaded(true,true); //This will load alphatab without the player
-		}
+		onAppletLoaded(true,true); //This will load alphatab without the player
 	}
     </script>
 </body>

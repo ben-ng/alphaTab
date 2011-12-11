@@ -20,8 +20,8 @@ import java.util.ArrayList;
 
 import javax.sound.midi.ControllerEventListener;
 import javax.sound.midi.MidiMessage;
-import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Receiver;
 
 public class TickNotifierReceiver implements Receiver
 {

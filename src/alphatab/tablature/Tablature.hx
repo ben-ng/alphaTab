@@ -256,7 +256,8 @@ class Tablature
         var result:MeasureSearchResult = getMeasureAt(position);
         if (result.measure == null)
         {
-            result.measure = SongManager.getFirstMeasure(track);
+        	//Prevents the annoying jump at the EOF
+			result.measure = SongManager.getLastMeasure(track);
         }
         return result;
     }

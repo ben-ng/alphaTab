@@ -24,22 +24,27 @@ import java.awt.event.MouseListener;
 import java.lang.IllegalStateException;
 import java.util.concurrent.locks.*;
 import java.util.concurrent.TimeUnit;
+import java.util.List;
 import java.io.*;
 import java.lang.InterruptedException;
 
 import javax.swing.JOptionPane;
 
 import javax.sound.midi.ControllerEventListener;
+import javax.sound.midi.MetaEventListener;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
+import javax.sound.midi.MetaMessage;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Transmitter;
 import javax.swing.BorderFactory;
 import javax.swing.JApplet;
 import javax.swing.JLabel;
+
+import org.herac.tuxguitar.player.impl.midiport.coreaudio.*;
 
 import netscape.javascript.JSObject;
 
@@ -49,50 +54,28 @@ public class MidiPlayer extends JApplet {
 	private long _lastTick;
 	private String _updateFunction;
 	private String _jsInitFunction;
+	private String _stopFunction;
 	private int _metronomeTrack;
 	private TickNotifierReceiver _tickReceiver;
 	private ReentrantLock _lockObj;
 	private JSObject _win;
 	private boolean noMIDI=false;
+	private boolean isMac=false;
+	private boolean isSetup=false;
 
 	@Override
 	public void init() {
 		super.init();
 		_updateFunction = getParameter("onTickChanged");
 		_jsInitFunction = getParameter("onAppletLoaded");
+		_stopFunction = getParameter("onSequenceStop");
 
 		try {
 			_sequencer = MidiSystem.getSequencer();
 			_sequencer.open();
 
-			Transmitter tickTransmitter = _sequencer.getTransmitter();
-			_tickReceiver = new TickNotifierReceiver(tickTransmitter.getReceiver());
-			tickTransmitter.setReceiver(_tickReceiver);
+			//We use this lock object throughout to prevent deadlocks
 			_lockObj = new ReentrantLock();
-
-			_tickReceiver.addControllerEventListener(new ControllerEventListener() {
-				@Override
-				public void controlChange(ShortMessage event) {
-					if(_lockObj.tryLock()) {
-						try {
-							if(_sequencer.isRunning()) {
-								switch(event.getCommand()) {
-									case 0x80: // Noteon
-									case 0x90: // Noteoff
-											notifyPosition(_sequencer.getTickPosition());
-										break;
-								}
-							}
-						}
-						catch(Exception ep) {
-							ep.printStackTrace();
-						}
-						finally {
-							_lockObj.unlock();
-						}
-					}
-				}
-			});
 		}
 		catch (MidiUnavailableException e) {
 			noMIDI=true;
@@ -100,6 +83,90 @@ public class MidiPlayer extends JApplet {
 		}
 	}
 
+	public void setIsMac(boolean isAMac) {
+		this.isMac = isAMac;
+	}
+
+	public boolean getIsMac() {
+		return this.isMac;
+	}
+
+	private void performSetupIfNecessary() throws MidiUnavailableException {
+		if(this.isSetup) {
+			return;
+		}
+		this.isSetup=true;
+
+		//If this is a mac, we need to disable the native synthesizer by replacing it with
+		//our custom receiver
+		if(this.getIsMac()) {
+			List<Transmitter> transmitters=_sequencer.getTransmitters();
+
+			//Loop through all transmitters (there should only be one, but lets be safe here)
+			for(int i=0; i<transmitters.size(); i++) {
+				Transmitter tickTransmitter = transmitters.get(i);
+				if(i==0) {
+					//This custom receiver sends audio events to the CoreAudio JNI library, bypassing
+					//the native java midi system
+					MidiReceiverImpl coreAudioReceiver=new MidiReceiverImpl(tickTransmitter.getReceiver());
+					coreAudioReceiver.open();
+					tickTransmitter.setReceiver(coreAudioReceiver);
+				}
+				else {
+					//This receiver has a neutered send() override
+					tickTransmitter.setReceiver(new DummyReceiver());
+				}
+			}
+		}
+
+		//Now we get a new transmitter so that LiveConnect won't deadlock/lag along with the audio thread
+		Transmitter liveConnectTransmitter = _sequencer.getTransmitter();
+		_tickReceiver = new TickNotifierReceiver(liveConnectTransmitter.getReceiver());
+		liveConnectTransmitter.setReceiver(_tickReceiver);
+
+		//Notifies javascript whenever a noteon or noteoff event occurs
+		_tickReceiver.addControllerEventListener(new ControllerEventListener() {
+			@Override
+			public void controlChange(ShortMessage event) {
+				if(_lockObj.tryLock()) {
+					try {
+						if(_sequencer.isRunning()) {
+							switch(event.getCommand()) {
+								case 0x80: // Noteon
+								case 0x90: // Noteoff
+										notifyPosition(_sequencer.getTickPosition());
+									break;
+							}
+						}
+					}
+					catch(Exception ep) {
+						ep.printStackTrace();
+					}
+					finally {
+						_lockObj.unlock();
+					}
+				}
+			}
+		});
+
+		_sequencer.addMetaEventListener(new MetaEventListener() {
+            @Override
+            public void meta(MetaMessage metaMsg) {
+		        if (metaMsg.getType() == 0x2F) {
+					try {
+		                notifyStop(_sequencer.getTickPosition());
+					}
+					catch(Exception ep) {
+						ep.printStackTrace();
+					}
+					finally {
+						_lockObj.unlock();
+					}
+		        }
+            }
+        });
+	}
+	//Runs when the applet starts, calls the javascript init function
 	public void start() {
 		if(_win==null) {
 			//This pulls up the javascript player overlay
@@ -114,13 +181,39 @@ public class MidiPlayer extends JApplet {
 	}
 
 	private void notifyPosition(long tickPosition) {
-		if(_lastTick == tickPosition || _updateFunction == null)return;
+		if(_lastTick == tickPosition || _updateFunction == null) return;
 		try {
 			_win.eval("setTimeout(function(){"+_updateFunction+"("+tickPosition+");},1);");
 			_lastTick = tickPosition;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void notifyStop(long tickPosition) {
+		if(_updateFunction == null)return;
+		while(true) {
+			if(_lockObj.getHoldCount()==0) {
+				_lockObj.lock();
+				try {
+					_sequencer.stop();
+					long tickpos=tickPosition-960*4;
+					_sequencer.setTickPosition(tickpos);
+					_win.eval("setTimeout(function(){"+_stopFunction+"("+tickpos+");},1);");
+					System.out.println("setTimeout(function(){"+_stopFunction+"("+tickpos+");},1);");
+				}
+				catch (Exception ep) {
+					ep.printStackTrace();
+				}
+				finally {
+					_lockObj.unlock();
+					break;
+				}
+			}
+			else {
+				System.err.println("Could not acquire lock to send EOT callback");
+			}
 		}
 	}
 
@@ -168,8 +261,9 @@ public class MidiPlayer extends JApplet {
 	}
 
 	public void play() {
-		_lockObj.lock();
 		try {
+			performSetupIfNecessary();
+			_lockObj.lock();
 			_sequencer.start();
 		}
 		catch (Exception e) {
@@ -185,13 +279,6 @@ public class MidiPlayer extends JApplet {
 		if(_lockObj.getHoldCount()==0) {
 			_lockObj.lock();
 			try {
-				/*Not sure if this helps or is necesscary, sends the allSoundsOff command
-				for(int i = 0; i < 15; i++) {
-					ShortMessage allNotesOff = new ShortMessage();
-					allNotesOff.setMessage(176 + i, 120, 0);
-					_tickReceiver.send(allNotesOff, -1);
-				}
-				*/
 				_sequencer.stop();
 			}
 			catch (IllegalStateException e) {

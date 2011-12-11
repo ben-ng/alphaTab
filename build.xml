@@ -32,6 +32,7 @@
     <!-- Java-Player Properties -->	
 	<property name="player-base" location="subprojects/java-player"/>	
 	<property name="player-src" location="${player-base}/src"/>	
+	<property name="player-jnilib" location="${player-base}/jni"/>	
 	<property name="player-bin" location="${player-base}/bin"/>	
 	<property name="player-jar" location="${lib-js}/alphaTab.jar"/>	
 
@@ -43,6 +44,12 @@
 		<!-- Compile Sources -->
 		<echo message="compiling midi player"/>
 		<javac includeantruntime="false" srcdir="${player-src}" destdir="${player-bin}" classpath="C:/Program Files/Java/jre6/lib/plugin.jar" failonerror="true" />
+
+		<!-- Copy .jnilib for Mac OSX -->
+		<echo message="copying .jnilib to ${player-bin}"/>
+		<copy todir="${player-bin}" overwrite="true">
+			<fileset dir="${player-jnilib}" />
+		</copy>
 
 		<!-- Package Jar -->
 		<echo message="create midi player jar"/>
@@ -183,24 +190,16 @@
 		<copy todir="${release}/${DSTAMP}/lib/support" overwrite="true">
 			<fileset dir="${lib-support}" />
 		</copy>
-		<!-- minify javascripts -->
-		<echo message="minify alphaTab.js"/>
-		<java jar="${tools}\compiler.jar" fork="true" failonerror="true">
-			<arg value="--compilation_level" />
-			<arg value="SIMPLE_OPTIMIZATIONS" />
-			
+		<echo message="minify alphaTab.js (modified google closure compiler)"/>
+		<java jar="${tools}\custom-closure-compiler.jar" fork="true" failonerror="true">
 			<arg value="--js" />
 			<arg value="${release}/${DSTAMP}/lib/alphaTab/alphaTab.js" />
 			
 			<arg value="--js_output_file" />
 			<arg value="${release}/${DSTAMP}/lib/alphaTab/alphaTab.min.js" />
 		</java>
-        
-		<echo message="minify jquery.alphaTab.js"/>
-		<java jar="${tools}\compiler.jar" fork="true" failonerror="true">		
-			<arg value="--compilation_level" />
-			<arg value="SIMPLE_OPTIMIZATIONS" />
-			
+		<echo message="minify jquery.alphaTab.js (modified google closure compiler)"/>
+		<java jar="${tools}\custom-closure-compiler.jar" fork="true" failonerror="true">
 			<arg value="--js" />
 			<arg value="${release}/${DSTAMP}/lib/alphaTab/jquery.alphaTab.js" />
 			

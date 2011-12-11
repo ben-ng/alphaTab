@@ -38,8 +38,12 @@ class BeatDrawing extends Beat
     // within the current MeasureDrawing
     public function isFirstOfLine():Bool
     {
-        return measure.beats.length == 0 || // no beats in this line yet. this instance will become the first
-            index==0; // if there are any beats yet, check if we are first
+        if(measure.beats.length == 0 || // no beats in this line yet. this instance will become the first
+            index==0) { // if there are any beats yet, check if we are first
+            return true;
+        }
+        //TODO: Return true if preceeding beats are empty
+        return false;
     }
     
     // full width including the additional spacing provided by the measure

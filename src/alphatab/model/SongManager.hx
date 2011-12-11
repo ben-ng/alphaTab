@@ -315,4 +315,9 @@ class SongManager
     {
         return track.measureCount() > 0 ? track.measures[0] : null;
     }
+    
+    public static function getLastMeasure(track:Track):Measure
+    {
+        return track.measureCount() > 0 ? track.measures[track.measureCount()-1] : null;
+    }
 }
