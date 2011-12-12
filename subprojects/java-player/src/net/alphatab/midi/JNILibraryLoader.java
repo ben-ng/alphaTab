@@ -11,7 +11,7 @@ public class JNILibraryLoader {
 	private static final String JNI_EXTENSION = ".jnilib";
 
 	public static void loadLibrary(String libname){
-		System.out.println("trying to load" + libname + " (void loadLibrary)");
+		System.out.println("Loading jnilib: " + libname);
 
 		final String slibname=libname;
 
@@ -24,7 +24,7 @@ public class JNILibraryLoader {
 	}
 
 	private static boolean loadFromClassPath(String filename){
-		System.out.println("trying to load " + filename + " (bool loadFromClassPath)");
+		System.out.println("Loading " + filename + " from classpath");
 		final String sfilename=filename;
 		try{
 	        AccessController.doPrivileged(new PrivilegedAction() {

@@ -35,6 +35,8 @@
 	<property name="player-jnilib" location="${player-base}/jni"/>	
 	<property name="player-bin" location="${player-base}/bin"/>	
 	<property name="player-jar" location="${lib-js}/alphaTab.jar"/>	
+	<property name="player-jar-signed" location="${lib-js}/alphaTabS.jar"/>	
+	<property file="jarsigning.properties"/>
 
 	<!-- Java Player -->  
 	<target name="java-player" depends="global-init">
@@ -55,6 +57,16 @@
 		<echo message="create midi player jar"/>
 		<delete file="${player-jar}" />
 		<jar jarfile="${player-jar}" basedir="${player-bin}" />
+		
+		<!-- Sign Jar -->
+		<echo message="signing jarfile" />
+		<exec dir="C:\Program Files (x86)\Java\jdk1.6.0_26\bin" executable="jarsigner">
+			<arg line="-keystore ${keystore}" />
+			<arg line="-storepass ${storepass}" />
+			<arg line='-signedjar "${player-jar-signed}"' />
+			<arg line='"${player-jar}"' />
+			<arg line="signFiles" />
+		</exec>
 
 		<!-- Remove Build Directory -->
 		<delete dir="${player-bin}" />
@@ -190,7 +202,7 @@
 		<copy todir="${release}/${DSTAMP}/lib/support" overwrite="true">
 			<fileset dir="${lib-support}" />
 		</copy>
-		<echo message="minify alphaTab.js (modified google closure compiler)"/>
+		<echo message="minify alphaTab.js"/>
 		<java jar="${tools}\custom-closure-compiler.jar" fork="true" failonerror="true">
 			<arg value="--js" />
 			<arg value="${release}/${DSTAMP}/lib/alphaTab/alphaTab.js" />
@@ -198,13 +210,73 @@
 			<arg value="--js_output_file" />
 			<arg value="${release}/${DSTAMP}/lib/alphaTab/alphaTab.min.js" />
 		</java>
-		<echo message="minify jquery.alphaTab.js (modified google closure compiler)"/>
+		
+		<echo message="minify jquery.alphaTab.js"/>
 		<java jar="${tools}\custom-closure-compiler.jar" fork="true" failonerror="true">
 			<arg value="--js" />
 			<arg value="${release}/${DSTAMP}/lib/alphaTab/jquery.alphaTab.js" />
 			
 			<arg value="--js_output_file" />
 			<arg value="${release}/${DSTAMP}/lib/alphaTab/jquery.alphaTab.min.js" />
+		</java>
+		
+		<echo message="minify jquery.alphaTab.player.js"/>
+		<java jar="${tools}\custom-closure-compiler.jar" fork="true" failonerror="true">
+			<arg value="--js" />
+			<arg value="${release}/${DSTAMP}/lib/alphaTab/jquery.alphaTab.player.js" />
+			
+			<arg value="--js_output_file" />
+			<arg value="${release}/${DSTAMP}/lib/alphaTab/jquery.alphaTab.player.min.js" />
+		</java>
+		
+		<echo message="minify jquery.hotkeys.js"/>
+		<java jar="${tools}\custom-closure-compiler.jar" fork="true" failonerror="true">
+			<arg value="--js" />
+			<arg value="${release}/${DSTAMP}/lib/support/jquery.hotkeys.js" />
+			
+			<arg value="--js_output_file" />
+			<arg value="${release}/${DSTAMP}/lib/support/jquery.hotkeys.min.js" />
+		</java>
+		
+		<echo message="minify browserDetect.js"/>
+		<java jar="${tools}\custom-closure-compiler.jar" fork="true" failonerror="true">
+			<arg value="--js" />
+			<arg value="${release}/${DSTAMP}/lib/support/browserDetect.js" />
+			
+			<arg value="--js_output_file" />
+			<arg value="${release}/${DSTAMP}/lib/support/browserDetect.min.js" />
+		</java>
+		
+		<echo message="minify jquery.alphaTab.player.include.js"/>
+		<java jar="${tools}\custom-closure-compiler.jar" fork="true" failonerror="true">
+			<arg value="--js" />
+			<arg value="${release}/${DSTAMP}/lib/alphaTab/jquery.alphaTab.player.include.js" />
+			
+			<arg value="--js_output_file" />
+			<arg value="${release}/${DSTAMP}/lib/alphaTab/jquery.alphaTab.player.include.min.js" />
+		</java>
+		
+		<echo message="Concatenate all JS files"/>
+		<concat destfile="${release}/${DSTAMP}/lib/alphalib.js" force="yes">
+			<filelist dir="${release}/${DSTAMP}/lib">
+				<file name="support/jquery.hotkeys.min.js" />
+				<file name="alphaTab/alphaTab.min.js" />
+				<file name="alphaTab/jquery.alphaTab.min.js" />
+				<file name="support/jquery-ui-1.8.14.custom.min.js" />
+				<file name="alphaTab/jquery.alphaTab.player.min.js" />
+				<file name="support/deployJava.js" />
+				<file name="support/browserDetect.js" />
+				<file name="alphaTab/jquery.alphaTab.player.include.min.js" />
+			</filelist>
+		</concat>
+		
+		<echo message="minify alphalib.js"/>
+		<java jar="${tools}\custom-closure-compiler.jar" fork="true" failonerror="true">
+			<arg value="--js" />
+			<arg value="${release}/${DSTAMP}/lib/alphalib.js" />
+			
+			<arg value="--js_output_file" />
+			<arg value="${release}/${DSTAMP}/lib/alphalib.min.js" />
 		</java>
         
         <!-- Remove Web files from demo -->

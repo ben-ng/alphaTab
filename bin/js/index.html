@@ -11,117 +11,25 @@
 	<!--[if IE]><script src="/scripts/excanvas/excanvas.js"></script><![endif]-->
 </head>
 <body>
-
-<script language = "JavaScript" type = "text/javascript" src = "lib/support/jquery.hotkeys.js"></script>
-<script language = "JavaScript" type = "text/javascript" src = "lib/alphaTab/alphaTab.min.js"></script>
-<script language = "JavaScript" type = "text/javascript" src = "lib/alphaTab/jquery.alphaTab.min.js"></script>
-<script language = "JavaScript" type = "text/javascript" src = "lib/support/jquery-ui-1.8.14.custom.min.js"></script>
-<script language = "JavaScript" type = "text/javascript" src = "lib/alphaTab/jquery.alphaTab.player.js"></script>
-<script language = "JavaScript" type = "text/javascript" src = "lib/support/deployJava.js"></script>
-<script language = "JavaScript" type = "text/javascript" src = "lib/support/browserDetect.js"></script>
-
 <div class = "alphaTab">
     <h1>Loading File</h1><br />
 	Just a second while we load up Java...
 </div>
+<script language = "JavaScript" type = "text/javascript" src = "lib/alphalib.min.js"></script>
 <script language = "JavaScript" type = "text/javascript">
 	var api = null;
-	// !required!
-	function launchPlayer() {
-		api.player(
-		{                                     // enable the player only after the applet has loaded
-			playerTickCallback: "onTickChanged", // !required!
-			onAppletLoaded: "onAppletLoaded"     // !required!
-		});
-		return false;
-	}
-	function onAppletLoaded(noplayer,nomidi) {
-		$("#midiplayer").attr("width",0).attr("height",0);
-		document.getElementById("midiplayer").setIsMac(BrowserDetect.OS==="Mac");
-		
-		api = $('div.alphaTab').alphaTab(
-			{
-				file: "demo/files/FadeToBlack.gp4",
-				zoom: 1,
-				width: $('body').innerWidth() - 50, //Subtract padding (20) then another 10px to avoid horizontal scrollbar forming
-				autoSize: false,
-				//staves: ["tablature"],
-				error: 'Applet loaded, working on the file now...',
-	            loadCallback: (
-	            	(noplayer||nomidi) ?
-	            	function(song) {
-						var playerControls = $('<div class="jqueryui fixedControls player"></div>');
-						var tracks = $('<select id="tracks"></select>');
-						playerControls.append(tracks);
-						
-						for (var i = 0; i < song.tracks.length; i++) {
-							var trackName=song.tracks[i].name;
-							if(trackName.toLowerCase().indexOf("track")==0) {
-								trackName=song.tracks[i].channel.getInstrumentName();
-							}
-							var elm = $('<option value="' + i + '">' + (i+1) + ' - ' + trackName + '</option>');
-							if(i == 0) { elm.attr("selected", "selected"); }
-							tracks.append(elm);
-						}
-						$("div.alphaTab").append(playerControls);
-						tracks.selectmenu({
-					        style:'popup', 
-			       			menuWidth:200,
-			       			maxHeight:1000,
-							positionOptions: {
-								my: "left bottom",
-								at: "left top",
-								offset: "0 0",
-							},
-							wrapperElement: '<div id="selectWrap" class="jqueryui" />',
-							change:function(e) {
-								var index = parseInt($('#tracks :selected').val());
-								api.tablature.setTrack(api.tablature.track.song.tracks[index]);
-							}
-						});
-						$("#selectWrap").css("margin-left",25);
-		            }
-		            : undefined
-	            )
-			});
-			
-		if((noplayer!==undefined && noplayer===true) || (nomidi!==undefined && nomidi===true)) {
-			//Launch non-player interface
-			var newItem=$("<li></li>");
-			var linkText="Player Disabled - Help";
-			if(noplayer===true) {
-				linkText="Player Disabled - Install Java"
-			}
-			if(nomidi===true) {
-				linkText="Player Disabled - No Midi Support"
-			}
-			var newLink=$("<a></a>").attr("href","/site/page/view/javahelp").text(linkText);
-			newItem.append(newLink);
-			$("#playerNavMenu").append(newItem);
-			
-			
-		}
-		else {
-			//Launch player interface
-			launchPlayer();
-		}
-		return true;
-	}
-	// !required!
-	function onTickChanged (tickPosition) {
-		api.updateCaret(tickPosition);
-		return true;
-	}
-	function onSequenceStopped(tickPosition) {
-		$('#playButton').click();
-		api.updateCaret(tickPosition);
-		return true;
-	}
+	var callback=function(nojava,nomidi){
+		alert("Problems Detected: "+(nojava?"No Java":"")+" "+(nomidi?"No Midi":""));
+	};
+	var fileSource = "demo/files/FadeToBlack.gp4";
+	var jarRoot = "lib/alphaTab/";
+	
 	// create applet
 	var attributes =
 		{
 			code: "net.alphatab.midi.MidiPlayer.class",
-			archive: "lib/alphaTab/alphaTab.jar",
+			/*Load the signed applet only on macs.. saves the windows users some headache*/
+			archive: (BrowserDetect.OS=="Mac"?jarRoot+"alphaTabS.jar":jarRoot+"alphaTab.jar"),
 			width: 0,
 			height: 0,
 			id: 'midiplayer',
@@ -134,10 +42,6 @@
 			onSequenceStop: 'onSequenceStopped'
 		};
 	var version = '1.5.0+';
-	function startJREInstall() {
-		deployJava.setInstallerType("online");
-		deployJava.installLatestJRE();
-	}
 	if(deployJava.versionCheck(version)===true) {
 		if(deployJava.isPluginInstalled()===false) { //Giving the applet some dimensions so that browser can give instructions
 			attributes.width=250;
@@ -148,6 +52,6 @@
 	else {
 		onAppletLoaded(true,true); //This will load alphatab without the player
 	}
-    </script>
+</script>
 </body>
 </html>

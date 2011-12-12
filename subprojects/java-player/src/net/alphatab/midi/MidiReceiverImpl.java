@@ -12,7 +12,7 @@ public class MidiReceiverImpl extends MidiReceiverJNI implements Receiver{
 	    private Receiver _old;
 
 	public MidiReceiverImpl(Receiver oldRecv){
-		System.out.println("MidiReceiverImpl");
+		//System.out.println("MidiReceiverImpl");
 		this.connected = false;
 		_old=oldRecv;
 	}
@@ -29,31 +29,30 @@ public class MidiReceiverImpl extends MidiReceiverJNI implements Receiver{
 			int data2 = sm.getData2();
 			switch(command) {
 				case ShortMessage.NOTE_ON:
-					System.out.println("NOTE_ON");
+					//System.out.println("NOTE_ON");
 					this.sendNoteOn(channel,data1,data2);
-
 				break;
 				case ShortMessage.NOTE_OFF:
-					System.out.println("NOTE_OFF");
+					//System.out.println("NOTE_OFF");
 					this.sendNoteOff(channel,data1,data2);
 				break;
 				case ShortMessage.CONTROL_CHANGE:
-					System.out.println("CONTROL_CHANGE");
+					//System.out.println("CONTROL_CHANGE");
 					this.sendControlChange(channel,data1,data2);
 				break;
 				case ShortMessage.PROGRAM_CHANGE:
-					System.out.println("PROGRAM_CHANGE");
+					//System.out.println("PROGRAM_CHANGE");
 					this.sendProgramChange(channel,data1);
 				break;
 				case ShortMessage.PITCH_BEND:
-					System.out.println("PITCH_BEND");
+					//System.out.println("PITCH_BEND");
 					this.sendPitchBend(channel,data2);
 				break;
 				default:
 					System.out.println("NOTICE: Unknown midi command, ignoring");
 				break;
 			}
-			System.out.println("Channel: "+channel+" Data: "+data1+","+data2);
+			//System.out.println("Channel: "+channel+" Data: "+data1+","+data2);
 		}
 		else {
 			System.out.println("NOTICE: Non-shortmessage received");
@@ -64,7 +63,7 @@ public class MidiReceiverImpl extends MidiReceiverJNI implements Receiver{
 	}
 
 	public void open(){
-		System.out.println("open");
+		//System.out.println("open");
 		//super.open();
 		this.open = true;
 		this.connect();
@@ -87,7 +86,7 @@ public class MidiReceiverImpl extends MidiReceiverJNI implements Receiver{
 	}
 
     public void connect(){
-		System.out.println("connect()");
+		//System.out.println("connect()");
         if(isOpen()){
             if(!isConnected()){
                 this.connected = true;

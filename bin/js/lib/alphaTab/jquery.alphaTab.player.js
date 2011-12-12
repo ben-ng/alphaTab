@@ -41,7 +41,7 @@
 				pause: "Pause",
 				stop: "Stop",
 				metronome: "Metronome",
-				mute: "Mute Track",
+				mute: "Mute Track"
 			}
     };
 	self.lastTickPos = 0;
@@ -76,7 +76,7 @@
 				positionOptions: {
 					my: "left bottom",
 					at: "left top",
-					offset: "0 0",
+					offset: "0 0"
 				},
 				wrapperElement: '<div id="selectWrap" class="jqueryui" />',
 				change:function(e) {

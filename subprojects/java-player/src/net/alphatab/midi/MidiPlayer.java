@@ -201,7 +201,6 @@ public class MidiPlayer extends JApplet {
 					long tickpos=tickPosition-960*4;
 					_sequencer.setTickPosition(tickpos);
 					_win.eval("setTimeout(function(){"+_stopFunction+"("+tickpos+");},1);");
-					System.out.println("setTimeout(function(){"+_stopFunction+"("+tickpos+");},1);");
 				}
 				catch (Exception ep) {
 					ep.printStackTrace();
