@@ -39,7 +39,7 @@ class NoteDrawing extends Note
     {
         if (_accidental < 0)
         {
-            _accidental = measureDrawing().getNoteAccitental(realValue());
+            _accidental = measureDrawing().getNoteAccidental(realValue());
         }
         return _accidental;
     }

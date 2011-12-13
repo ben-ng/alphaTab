@@ -164,7 +164,7 @@ class MeasureDrawing extends Measure
         _defaultSpacings = -1;
     }
     
-    public function getNoteAccitental(noteValue:Int)
+    public function getNoteAccidental(noteValue:Int)
     {
         if (noteValue >= 0 && noteValue < 128)
         {
