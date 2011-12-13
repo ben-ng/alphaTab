@@ -47,6 +47,8 @@ typedef MeasureSearchResult = {
 class Tablature 
 {
     public static var DEFAULT_LAYOUT:String = PageViewLayout.LAYOUT_ID;
+   
+    private var selectedMeasure : Measure;
     
     private var _updateDisplay:Bool; 
     private var _updateSong:Bool;
@@ -231,6 +233,10 @@ class Tablature
     private var _lastRealPosition:Int; 
     private var _selectedBeat:Beat; 
     
+    public function getCurrentMeasure() {
+    	return _selectedBeat.measure;
+    }
+    
     public function notifyTickPosition(position:Int,forced:Bool,scroll:Bool)
     {
         position -= Duration.QUARTER_TIME; // remove first tick start
@@ -257,7 +263,13 @@ class Tablature
         if (result.measure == null)
         {
         	//Prevents the annoying jump at the EOF
-			result.measure = SongManager.getLastMeasure(track);
+			//result.measure = SongManager.getFirstMeasure(track);
+        	if(position<=960) {
+				result.measure = SongManager.getFirstMeasure(track);
+        	}
+        	else {
+				result.measure = SongManager.getLastMeasure(track);
+        	}
         }
         return result;
     }

@@ -53,6 +53,32 @@
 	//
 	// API Functions
 	//
+	this.selectPreviousMeasure = function() {
+		var measure = api.tablature.getCurrentMeasure();
+		var prevMeasure=measure.prev();
+		if(prevMeasure!=null) {
+			self.goToMeasure(prevMeasure);
+		}
+	}
+	this.selectNextMeasure = function() {
+		var measure = api.tablature.getCurrentMeasure();
+		var nextMeasure=measure.next();
+		if(nextMeasure!=null) {
+			self.goToMeasure(nextMeasure);
+		}
+	}
+	this.goToMeasure = function(measure) {
+		if(measure != null) {
+			var wasRunning=self.midiPlayer.isRunning();
+			//Pause music if running
+			if(wasRunning) { playButton.click(); }
+			var tick = 960 + measure.start();
+			self.midiPlayer.goTo(tick);
+			self.updateCaret(tick,true,false);
+			//Resume music
+			if(wasRunning) { playButton.click(); }
+		}
+	}
 	this.updatePlayer = function(song) {
 		var songData = alphatab.midi.MidiDataProvider.getSongMidiData(song, self.factory, self.tablature.viewLayout._map);
 		if(self.midiPlayer.isActive()) {
@@ -204,8 +230,9 @@
 		});
 		$( "#tempoView" ).text("1.0X");
 		//Let the spacebar toggle playback of the song
-		$(document).bind('keyup', 'right', function(){playButton.click();});
-		$(document).bind('keyup', 'left', function(){playButton.click();});
+		$(document).bind('keyup', 'p', function(){playButton.click();});
+		$(document).bind('keyup', 'right', function(){self.selectNextMeasure();});
+		$(document).bind('keyup', 'left', function(){self.selectPreviousMeasure();});
 		trackSelect.click(function(e) {
 			if(self.midiPlayer.isActive() && self.midiPlayer.isRunning()) { togglePlay(e); }
 		})
@@ -234,14 +261,7 @@
 			var y = e.pageY - offsets.top;
 			var measure = self.tablature.viewLayout.getMeasureAt(x, y);
 			if(measure != null) {
-				var wasRunning=self.midiPlayer.isRunning();
-				//Pause music if running
-				if(wasRunning) { playButton.click(); }
-				var tick = 960 + measure.start();
-				self.midiPlayer.goTo(tick);
-				self.updateCaret(tick,true,false);
-				//Resume music
-				if(wasRunning) { playButton.click(); }
+				self.goToMeasure(measure);
 			}
 		});
 	}

@@ -188,7 +188,7 @@
 		<mkdir dir="${release}/${DSTAMP}/lib/support" />
 	</target>	
 		
-	<target name="release" depends="release-init">
+	<target name="release" depends="release-init,haxe-js">
 		<echo message="copying release files to ${release}/${DSTAMP}"/>
 		<!-- copy distribution files -->		
 		<copy todir="${release}/${DSTAMP}" overwrite="true">

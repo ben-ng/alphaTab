@@ -107,4 +107,22 @@ class Measure
         beat.index = beats.length;
         beats.push(beat);
     }
+    
+    public function prev() : Measure
+    {
+    	var index=this.number()-1;
+    	if(index>0 && index<=this.track.measureCount()) {
+    		return this.track.measures[index-1];
+    	}
+    	return null;
+    }
+    
+    public function next() : Measure
+    {
+    	var index=this.number()-1;
+    	if(index>=0 && index<this.track.measureCount()-1) {
+    		return this.track.measures[index+1];
+    	}
+    	return null;
+    }
 }
