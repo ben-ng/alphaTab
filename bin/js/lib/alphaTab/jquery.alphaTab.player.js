@@ -53,16 +53,30 @@
 	//
 	// API Functions
 	//
-	this.selectPreviousMeasure = function() {
+	this.selectPreviousMeasure = function(e) {
 		var measure = api.tablature.getCurrentMeasure();
 		var prevMeasure=measure.prev();
 		if(prevMeasure!=null) {
 			self.goToMeasure(prevMeasure);
 		}
 	}
-	this.selectNextMeasure = function() {
+	this.selectNextMeasure = function(e) {
 		var measure = api.tablature.getCurrentMeasure();
 		var nextMeasure=measure.next();
+		if(nextMeasure!=null) {
+			self.goToMeasure(nextMeasure);
+		}
+	}
+	this.selectMeasureAbove = function(e) {
+		var measure = api.tablature.getCurrentMeasure();
+		var nextMeasure=api.tablature.viewLayout.getMeasureAbove(measure);
+		if(nextMeasure!=null) {
+			self.goToMeasure(nextMeasure);
+		}
+	}
+	this.selectMeasureBelow = function(e) {
+		var measure = api.tablature.getCurrentMeasure();
+		var nextMeasure=api.tablature.viewLayout.getMeasureBelow(measure);
 		if(nextMeasure!=null) {
 			self.goToMeasure(nextMeasure);
 		}
@@ -119,6 +133,10 @@
 					}
 					else { alert("The player has not loaded yet."); }
 				}
+			});
+			
+			$(document).bind('keyup', 'i', function(){
+  				tracks.trigger("click");
 			});
 		}
 		else {
@@ -230,9 +248,17 @@
 		});
 		$( "#tempoView" ).text("1.0X");
 		//Let the spacebar toggle playback of the song
-		$(document).bind('keyup', 'p', function(){playButton.click();});
-		$(document).bind('keyup', 'right', function(){self.selectNextMeasure();});
-		$(document).bind('keyup', 'left', function(){self.selectPreviousMeasure();});
+		var playToggle=function(e){
+			e.preventDefault();
+			playButton.click();
+			setTimeout(function(){self.updateCaret(self.lastTickPos,true,true)},200);
+		};
+		$(document).bind('keyup', 'p', playToggle);
+		$(document).bind('keyup', 'space', playToggle);
+		$(document).bind('keyup', 'right', function(e){e.preventDefault();self.selectNextMeasure(e);});
+		$(document).bind('keyup', 'left', function(e){e.preventDefault();self.selectPreviousMeasure(e);});
+		$(document).bind('keyup', 'up', function(e){e.preventDefault();self.selectMeasureAbove(e);});
+		$(document).bind('keyup', 'down', function(e){e.preventDefault();self.selectMeasureBelow(e);});
 		trackSelect.click(function(e) {
 			if(self.midiPlayer.isActive() && self.midiPlayer.isRunning()) { togglePlay(e); }
 		})
