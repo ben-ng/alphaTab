@@ -5,6 +5,9 @@ import javax.sound.midi.ControllerEventListener;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 public class MidiReceiverImpl extends MidiReceiverJNI implements Receiver{
 	private boolean open; // unnecessary
@@ -116,6 +119,14 @@ public class MidiReceiverImpl extends MidiReceiverJNI implements Receiver{
 
 	public void sendControlChange(int channel, int controller, int value) {
 		if(isOpen()){
+			/*Tweak volume logarithmically*/
+			if(controller==7) {
+				System.out.print("Volume: "+value);
+				BigDecimal val=new BigDecimal(Math.log(value+1)*(127/(Math.log(128))));
+				val.round(new MathContext(MathContext.DECIMAL32.getPrecision(),RoundingMode.HALF_EVEN));
+				value = val.intValue();
+				System.out.println(" changed to: "+value);
+			}
 			super.controlChange(channel, controller, value);
 		}
 	}
