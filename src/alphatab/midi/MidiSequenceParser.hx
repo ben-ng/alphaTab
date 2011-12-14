@@ -254,6 +254,8 @@ class MidiSequenceParser
                 
                 if (track.number == 1)
                 {
+                    measure.realTickStart=ticksAtMeasureStart;
+                    
                     addTimeSignature(sequence, measure, previous, move);
                     addTempo(sequence, measure, previous, move);
                     addMetronome(sequence, measure.header, move);

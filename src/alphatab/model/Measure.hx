@@ -29,6 +29,23 @@ class Measure
     public var beats(default,default):Array<Beat>;
     public var header(default,default):MeasureHeader;
     
+    public var realTickStart(default,default):Int;
+    
+    public function getRealTickStart() : Int
+    {
+    	if(track.number==1) {
+    		return realTickStart;
+    	}
+    	else {
+    		for(aTrack in track.song.tracks) {
+    			if(aTrack.number==1) {
+    				return aTrack.measures[number()-1].realTickStart;
+    			}
+    		}
+    	}
+    	return 0;
+    }
+    
     public inline function beatCount() : Int
     {
         return beats.length;

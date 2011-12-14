@@ -86,7 +86,7 @@
 			var wasRunning=self.midiPlayer.isRunning();
 			//Pause music if running
 			if(wasRunning) { playButton.click(); }
-			var tick = 960 + measure.start();
+			var tick = measure.getRealTickStart();
 			self.midiPlayer.goTo(tick);
 			self.updateCaret(tick,true,false);
 			//Resume music
@@ -248,20 +248,6 @@
 		});
 		$( "#tempoView" ).text("1.0X");
 		//Let the spacebar toggle playback of the song
-		var playToggle=function(e){
-			e.preventDefault();
-			playButton.click();
-			setTimeout(function(){self.updateCaret(self.lastTickPos,true,true)},200);
-		};
-		$(document).bind('keyup', 'p', playToggle);
-		$(document).bind('keyup', 'space', playToggle);
-		$(document).bind('keyup', 'right', function(e){e.preventDefault();self.selectNextMeasure(e);});
-		$(document).bind('keyup', 'left', function(e){e.preventDefault();self.selectPreviousMeasure(e);});
-		$(document).bind('keyup', 'up', function(e){e.preventDefault();self.selectMeasureAbove(e);});
-		$(document).bind('keyup', 'down', function(e){e.preventDefault();self.selectMeasureBelow(e);});
-		trackSelect.click(function(e) {
-			if(self.midiPlayer.isActive() && self.midiPlayer.isRunning()) { togglePlay(e); }
-		})
 		metronomeCheck.button().change(function() {
 			if(self.midiPlayer.isActive()) {
 				var enabled = metronomeCheck.attr('checked') ? true : false;
@@ -279,8 +265,9 @@
 			else { alert("The player has not loaded yet."); }
 		});
 		;
+		
 		// Sets the player to the start of the measure clicked
-		$(this.canvas).click(function(e) {
+		$(self.canvas).click(function(e) {
 			self.el.focus();
 			var offsets = $(this).offset();
 			var x = e.pageX - offsets.left;
@@ -290,6 +277,18 @@
 				self.goToMeasure(measure);
 			}
 		});
+		var playToggle=function(e){
+			e.preventDefault();
+			playButton.click();
+			setTimeout(function(){self.updateCaret(self.lastTickPos,true,true)},200);
+		};
+		
+		$(document).bind('keyup', 'p', playToggle);
+		$(document).bind('keyup', 'space', playToggle);
+		$(document).bind('keyup', 'right', function(e){e.preventDefault();self.selectNextMeasure(e);});
+		$(document).bind('keyup', 'left', function(e){e.preventDefault();self.selectPreviousMeasure(e);});
+		$(document).bind('keyup', 'up', function(e){e.preventDefault();self.selectMeasureAbove(e);});
+		$(document).bind('keyup', 'down', function(e){e.preventDefault();self.selectMeasureBelow(e);});
 	}
 	// create carets
 	if(playerOptions.caret) {
