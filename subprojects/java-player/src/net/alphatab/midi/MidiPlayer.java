@@ -39,6 +39,7 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.MetaMessage;
 import javax.sound.midi.ShortMessage;
+import javax.sound.midi.SysexMessage;
 import javax.sound.midi.Transmitter;
 import javax.swing.BorderFactory;
 import javax.swing.JApplet;
@@ -148,6 +149,30 @@ public class MidiPlayer extends JApplet {
 				}
 			}
 		});
+
+            _tickReceiver.addSysexEventListener(new SysexEventListener()
+            {
+                @Override
+                public void sysex(SysexMessage message)
+                {
+				if(_lockObj.tryLock()) {
+                    byte[] data = message.getData();
+                    // JOptionPane.showMessageDialog(null,"Sysex" + data);
+                    
+                    if(data[0] == 0x00 &&
+                       data[1] == MidiMessageUtils.REST_MESSAGE)
+                    {
+                        notifyPosition(_sequencer.getTickPosition());
+                    }
+                }
+					}
+					catch(Exception ep) {
+						ep.printStackTrace();
+					}
+					finally {
+						_lockObj.unlock();
+					}
+            });
 
 		_sequencer.addMetaEventListener(new MetaEventListener() {
             @Override
