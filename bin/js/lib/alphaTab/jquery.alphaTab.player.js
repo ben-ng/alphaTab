@@ -53,6 +53,18 @@
 	//
 	// API Functions
 	//
+	this.selectPreviousTrack = function(e) {
+		var curTrack=parseInt($("#tracks").selectmenu("value"));
+		if(curTrack>0) {
+			$("#tracks").selectmenu("value",curTrack-1).selectmenu("change");
+		}
+	}
+	this.selectNextTrack = function(e) {
+		var curTrack=parseInt($("#tracks").selectmenu("value"));
+		if(curTrack<self.tablature.track.song.tracks.length-1) {
+			$("#tracks").selectmenu("value",curTrack+1).selectmenu("change");
+		}
+	}
 	this.selectPreviousMeasure = function(e) {
 		var measure = api.tablature.getCurrentMeasure();
 		var prevMeasure=measure.prev();
@@ -283,6 +295,8 @@
 			setTimeout(function(){self.updateCaret(self.lastTickPos,true,true)},200);
 		};
 		
+		$(document).bind('keyup', 'a', function(e){e.preventDefault();self.selectNextTrack(e);});
+		$(document).bind('keyup', 'q', function(e){e.preventDefault();self.selectPreviousTrack(e);});
 		$(document).bind('keyup', 'p', playToggle);
 		$(document).bind('keyup', 'space', playToggle);
 		$(document).bind('keyup', 'right', function(e){e.preventDefault();self.selectNextMeasure(e);});
