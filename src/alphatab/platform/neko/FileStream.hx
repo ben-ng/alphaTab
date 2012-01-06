@@ -41,6 +41,11 @@ class FileStream extends Stream
         return _input.get(_pos++);
     }
     
+    public override function readChar():String 
+    {
+        return _input.readString(1);
+    }
+    
     public override function length() : Int
     {
        return _input.length;
