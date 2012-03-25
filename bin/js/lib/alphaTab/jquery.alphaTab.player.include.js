@@ -32,6 +32,7 @@ function launchAlphaTab(tabSource, noplayer, nomidi, callback) {
 	if(display_mode === null) {
 		display_mode = 0;
 	}
+	display_mode = parseInt(display_mode);
 	switch(display_mode) {
 		case 0:
 			staveset = ["tablature"];
@@ -53,8 +54,19 @@ function launchAlphaTab(tabSource, noplayer, nomidi, callback) {
 		error : 'Applet loaded, working on the file now...',
 		loadCallback : ((noplayer || nomidi) ? (function(song) {
 			var playerControls = $('<div class="jqueryui fixedControls player"></div>');
+			
+			var displaymodes = $('<select id="displaymodes"></select>');
+			var selected_mode=readCookie("alphatab_display_mode");
+			if(selected_mode===null) {
+				selected_mode=0;
+			}
+			displaymodes.append("<option value=\"0\""+(selected_mode==0?" selected=\"selected\"":"")+">Tablature</option>");
+			displaymodes.append("<option value=\"1\""+(selected_mode==1?" selected=\"selected\"":"")+">Score</option>");
+			displaymodes.append("<option value=\"2\""+(selected_mode==2?" selected=\"selected\"":"")+">Score + Tablature</option>");
+			
 			var tracks = $('<select id="tracks"></select>');
 			playerControls.append(tracks);
+			playerControls.append(displaymodes);
 			for(var i = 0; i < song.tracks.length; i++) {
 				var trackName = song.tracks[i].name;
 				if(trackName.toLowerCase().indexOf("track") == 0) {
@@ -67,6 +79,7 @@ function launchAlphaTab(tabSource, noplayer, nomidi, callback) {
 				tracks.append(elm);
 			}
 			$("div.alphaTab").append(playerControls);
+			
 			tracks.selectmenu({
 				style : 'popup',
 				menuWidth : 200,
@@ -82,11 +95,27 @@ function launchAlphaTab(tabSource, noplayer, nomidi, callback) {
 					api.tablature.setTrack(api.tablature.track.song.tracks[index]);
 				}
 			});
+			
+			displaymodes.selectmenu({
+				style : 'popup',
+				menuWidth : 140,
+				maxHeight : 1000,
+				positionOptions : {
+					my : "left bottom",
+					at : "left top",
+					offset : "0 0"
+				},
+				wrapperElement : '<div id="displayWrap" class="jqueryui" />',
+				change : function(e) {
+					eraseCookie("alphatab_display_mode");
+					createCookie("alphatab_display_mode",$('#displaymodes :selected').val(),365);
+					eraseCookie("alphatab_selected_track");
+					createCookie("alphatab_selected_track",$('#tracks :selected').val(),1);
+					location.reload(true);
+				}
+			});
+			
 			$("#selectWrap").css("margin-left", 25);
-			if(readCookie("alphatab_selected_track") !== null) {
-				api.tablature.setTrack(api.tablature.track.song.tracks[index]);
-				eraseCookie("alphatab_selected_track");
-			}
 		}) : undefined
 		)
 	});

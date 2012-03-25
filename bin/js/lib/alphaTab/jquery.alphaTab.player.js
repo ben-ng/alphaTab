@@ -200,9 +200,9 @@
 			if(selected_mode===null) {
 				selected_mode=0;
 			}
-			displaymodes.append("<option value=\"0\""+(selected_mode===0?" selected=\"selected\"":"")+">Tablature</option>");
-			displaymodes.append("<option value=\"1\""+(selected_mode===1?" selected=\"selected\"":"")+">Score</option>");
-			displaymodes.append("<option value=\"2\""+(selected_mode===2?" selected=\"selected\"":"")+">Score + Tab</option>");
+			displaymodes.append("<option value=\"0\""+(selected_mode==0?" selected=\"selected\"":"")+">Tablature</option>");
+			displaymodes.append("<option value=\"1\""+(selected_mode==1?" selected=\"selected\"":"")+">Score</option>");
+			displaymodes.append("<option value=\"2\""+(selected_mode==2?" selected=\"selected\"":"")+">Score + Tablature</option>");
 			playerControls.append(playButton);
 			playerControls.append(trackSelect);
 			playerControls.append(displaymodes);
@@ -216,16 +216,17 @@
 			playerControls.append(tempoWrapper);
 			playerControls.append(metronomeCheck);
 			playerControls.append('<label class="playerRightFloat" for="metronomeCheck">' + playerOptions.language.metronome + '</label>');
+			
 			displaymodes.selectmenu({
 				style : 'popup',
-				menuWidth : 170,
+				menuWidth : 140,
 				maxHeight : 1000,
 				positionOptions : {
 					my : "left bottom",
 					at : "left top",
 					offset : "0 0"
 				},
-				wrapperElement : '<div id="selectWrap" class="jqueryui" />',
+				wrapperElement : '<div id="displayWrap" class="jqueryui" />',
 				change : function(e) {
 					eraseCookie("alphatab_display_mode");
 					createCookie("alphatab_display_mode",$('#displaymodes :selected').val(),365);
@@ -234,6 +235,7 @@
 					location.reload(true);
 				}
 			});
+			
 			// hook up events
 			var togglePlay = function(e) {
 				if(self.midiPlayer.isActive()) {
