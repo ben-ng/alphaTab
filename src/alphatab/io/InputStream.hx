@@ -17,9 +17,9 @@
 package alphatab.io;
 
 /**
- * A base class for creating streams on multiple platforms.
+ * A base class for creating input streams on multiple platforms.
  */
-class Stream 
+class InputStream 
 {
     /**
      * Reads a 8bit unsigned integer from the stream and returns it value 
@@ -46,16 +46,12 @@ class Stream
         return data > 127 ? -256 + data : data;
     }
     
-    public function readBytes(count:Int, bigEndian:Bool = false) : Array<Int>
+    public function readBytes(count:Int) : Array<Int>
     {
         var bytes = new Array<Int>();
         for (i in 0 ... count) 
         {
            bytes.push(readByte());
-        }
-        
-        if(bigEndian) {
-            bytes.reverse();
         }
         
         return bytes;
@@ -89,9 +85,14 @@ class Stream
     {
         for (i in 0 ... count)
         {
-            readByte();
+            if(!eof())
+                readByte();
         }
     }
     
+    public function close()
+    {
+        
+    }
     
 }

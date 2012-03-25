@@ -63,6 +63,9 @@ class PageViewLayout extends ViewLayout
 		var current:MeasureDrawing = cast measure;
 		var staveLine:StaveLine = current.staveLine;
 		return this.getMeasureAt(Math.round(current.x+current.width/2),Math.round(staveLine.y+staveLine.getHeight()+10));
+    public override function getLines() : Array<StaveLine>
+    {
+        return _lines;
     }
     
     // Returns the index of the measure drawn under the coordinates given

@@ -14,46 +14,22 @@
  *  You should have received a copy of the GNU General Public License
  *  along with alphaTab.  If not, see <http://www.gnu.org/licenses/>.
  */
-package alphatab.platform.cpp;
+package alphatab.midi.model;
+import alphatab.io.DataOutputStream;
+import alphatab.io.OutputStream;
 
-#if cpp
-
-import alphatab.io.Stream;
-import haxe.io.Bytes;
-import cpp.io.File;
-
-/**
- * A stream implementation accessing a local file. 
- */
-class FileStream extends Stream
+class MidiMessage
 {
-    private var _input:Bytes;
-    private var _pos:Int;
+    public var data:Array<Int>;
     
-    public function new(path:String) 
+    public function new(data:Array<Int>)
     {
-        _input = File.getBytes(path);
-        _pos = 0;
+        this.data = data;
     }
     
-    public override function readByte() : Int
+    public function writeTo(out:OutputStream)
     {
-        return _input.get(_pos++);
+        out.writeBytes(data);
     }
-    
-    public override function length() : Int
-    {
-       return _input.length;
-    }
-    
-    public override function position() : Int
-    {   
-        return _pos;
-    }
-    
-    public override function seek(position:Int) : Void
-    {
-        _pos = position;
-    }
+
 }
-#end

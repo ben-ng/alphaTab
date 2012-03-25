@@ -14,41 +14,31 @@
  *  You should have received a copy of the GNU General Public License
  *  along with alphaTab.  If not, see <http://www.gnu.org/licenses/>.
  */
-package alphatab.platform.neko;
-
-#if neko
-
-import alphatab.io.Stream;
-import haxe.io.Bytes;
-import neko.io.File;
+package alphatab.io;
 
 /**
- * A stream implementation accessing a local file. 
+ * A stream implementation using a string as backstore for data.
+ * Each character represents a byte value. 
  */
-class FileStream extends Stream
+class StringInputStream extends InputStream
 {
-    private var _input:Bytes;
     private var _pos:Int;
+    private var _buffer:String;
     
-    public function new(path:String) 
+    public function new(buffer:String) 
     {
-        _input = File.getBytes(path);
+        _buffer = buffer;
         _pos = 0;
     }
     
     public override function readByte() : Int
     {
-        return _input.get(_pos++);
-    }
-    
-    public override function readChar():String 
-    {
-        return _input.readString(1);
+        return _buffer.charCodeAt(_pos++) & 0xFF;
     }
     
     public override function length() : Int
     {
-       return _input.length;
+       return _buffer.length;
     }
     
     public override function position() : Int
@@ -60,5 +50,9 @@ class FileStream extends Stream
     {
         _pos = position;
     }
+    
+    public override function canSeek():Bool 
+    {
+        return true;
+    }
 }
-#end

@@ -16,16 +16,12 @@
  */
 package alphatab.io;
 
-/**
- * A stream implementation using a string as backstore for data.
- * Each character represents a byte value. 
- */
-class StringStream extends Stream
+class MemoryInputStream extends InputStream
 {
     private var _pos:Int;
-    private var _buffer:String;
+    private var _buffer:Array<Int>;
     
-    public function new(buffer:String) 
+    public function new(buffer:Array<Int>) 
     {
         _buffer = buffer;
         _pos = 0;
@@ -33,12 +29,11 @@ class StringStream extends Stream
     
     public override function readByte() : Int
     {
-        return _buffer.charCodeAt(_pos++) & 0xFF;
-    }
-    
-    public override function readChar():String 
-    {
-        return _buffer.charAt(_pos++);
+        if (_pos >= _buffer.length)
+        {
+            return -1;
+        }
+        return _buffer[_pos++] & 0xFF;
     }
     
     public override function length() : Int
@@ -54,5 +49,15 @@ class StringStream extends Stream
     public override function seek(position:Int) : Void
     {
         _pos = position;
+    }
+    
+    public override function canSeek():Bool 
+    {
+        return true;
+    }
+    
+    public override function skip(count:Int):Dynamic 
+    {
+        _pos += count;
     }
 }
