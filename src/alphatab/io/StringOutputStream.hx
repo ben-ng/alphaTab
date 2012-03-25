@@ -38,12 +38,7 @@ class StringOutputStream extends OutputStream
         _buffer.add(String.fromCharCode(data));
     }    
     
-    public override function readChar():String 
     public override function writeString(text:String)
-    {
-        return _buffer.charAt(_pos++);
-    }
-    
     {
         _buffer.add(text);
     }

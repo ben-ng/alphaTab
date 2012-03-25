@@ -235,6 +235,7 @@ class MidiSequenceParser
     {
         var previous:Measure = null;
         var controller:MidiRepeatController = new MidiRepeatController(track.song);
+        var ticksAtMeasureStart:Int = 0;
         
         addBend(sequence, track.number, Duration.QUARTER_TIME, DEFAULT_BEND, track.channel.channel);
         makeChannel(sequence, track.channel, track.number);
@@ -256,6 +257,8 @@ class MidiSequenceParser
                     addTimeSignature(sequence, measure, previous, move);
                     addTempo(sequence, measure, previous, move);
                     addMetronome(sequence, measure.header, move);
+                                        
+                    ticksAtMeasureStart=sequence.getTicks();
                 }
                 
                 makeBeats(sequence, track, measure, index, move);

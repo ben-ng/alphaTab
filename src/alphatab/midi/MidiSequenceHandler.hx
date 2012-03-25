@@ -38,4 +38,6 @@ interface MidiSequenceHandler
     function addTimeSignature(tick:Int, track:Int, timeSignature:TimeSignature):Void;
     
     function notifyFinish():Void;
+    
+    function getTicks():Int;
 }
