@@ -51,6 +51,7 @@ class MidiSequenceParser
     private var _infoTrack :Int;
     private var _metronomeTrack :Int;
     private var _song:Song;
+    private var _timeKeeper:Hash<Bool>;
 
     public function new(factory:SongFactory, song:Song,  flags:Int, tempoPercent:Int, transpose:Int) 
     {
@@ -60,6 +61,7 @@ class MidiSequenceParser
         _transpose = transpose;
         _tempoPercent = tempoPercent;
         _firstTickMove = ((flags & MidiSequenceParserFlags.ADD_FIRST_TICK_MOVE) == 0) ? 0 : Duration.QUARTER_TIME;
+        _timeKeeper = new Hash<Bool>();
     }
     
     private function addBend(sequence:MidiSequenceHandler, track:Int, tick:Int, bend:Int, channel:Int) : Void
@@ -651,11 +653,18 @@ class MidiSequenceParser
         
     public function makeRest(sequence:MidiSequenceHandler, track:Track, start:Int, voice:Voice, beatIndex:Int, channel:Int) : Void
     {
-        sequence.addRest(getTick(start), track.number, channel);
+    	if(!_timeKeeper.exists(Std.string(getTick(start)))) {
+        	sequence.addRest(getTick(start), sequence.timeTrack, channel);
+        	_timeKeeper.set(Std.string(getTick(start)),true);
+        }
     }
     
     private function makeNote(sequence:MidiSequenceHandler, track:Int, key:Int, start:Int, duration:Int, velocity:Int, channel:Int) : Void
     {
+    	if(!_timeKeeper.exists(Std.string(getTick(start)))) {
+        	sequence.addRest(getTick(start), sequence.timeTrack, channel);
+        	_timeKeeper.set(Std.string(getTick(start)),true);
+        }
         sequence.addNoteOn(getTick(start), track, channel, key, velocity);
         sequence.addNoteOff(getTick(start + duration), track, channel, key, velocity);
     }

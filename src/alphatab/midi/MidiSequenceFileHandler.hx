@@ -27,6 +27,7 @@ class MidiSequenceFileHandler implements MidiSequenceHandler
 {
     public var infoTrack(default,default):Int;
     public var metronomeTrack(default,default):Int;
+    public var timeTrack(default,default):Int;
     private var _ticksSoFar:Int;
     
     public var midiFile:MidiFile;
@@ -37,6 +38,7 @@ class MidiSequenceFileHandler implements MidiSequenceHandler
         infoTrack = 0;
         _ticksSoFar=0;
         metronomeTrack = tracks - 1;
+        timeTrack = tracks;
     }
     
     public function resetTicks() {

@@ -21,6 +21,8 @@ interface MidiSequenceHandler
 {
     var infoTrack:Int;
     
+    var timeTrack:Int;
+    
     var metronomeTrack:Int;
     
     function addControlChange(tick:Int, track:Int, channel:Int, controller:Int, value:Int):Void;

@@ -125,20 +125,21 @@ public class MidiPlayer extends JApplet {
 		_tickReceiver = new TickNotifierReceiver(liveConnectTransmitter.getReceiver());
 		liveConnectTransmitter.setReceiver(_tickReceiver);
 
-		//Notifies javascript whenever a noteon or noteoff event occurs
-		_tickReceiver.addControllerEventListener(new ControllerEventListener() {
-			@Override
-			public void controlChange(ShortMessage event) {
+        _tickReceiver.addSysexEventListener(new SysexEventListener()
+        {
+            @Override
+            public void sysex(SysexMessage message)
+            {
 				if(_lockObj.tryLock()) {
 					try {
-						if(_sequencer.isRunning()) {
-							switch(event.getCommand()) {
-								case 0x80: // Noteon
-								case 0x90: // Noteoff
-										notifyPosition(_sequencer.getTickPosition());
-									break;
-							}
-						}
+		                byte[] data = message.getData();
+		                // JOptionPane.showMessageDialog(null,"Sysex" + data);
+		                
+		                if(data[0] == 0x00 &&
+		                   data[1] == MidiMessageUtils.REST_MESSAGE)
+		                {
+		                    notifyPosition(_sequencer.getTickPosition());
+		                }
 					}
 					catch(Exception ep) {
 						ep.printStackTrace();
@@ -146,33 +147,9 @@ public class MidiPlayer extends JApplet {
 					finally {
 						_lockObj.unlock();
 					}
-				}
-			}
-		});
-
-            _tickReceiver.addSysexEventListener(new SysexEventListener()
-            {
-                @Override
-                public void sysex(SysexMessage message)
-                {
-				if(_lockObj.tryLock()) {
-                    byte[] data = message.getData();
-                    // JOptionPane.showMessageDialog(null,"Sysex" + data);
-                    
-                    if(data[0] == 0x00 &&
-                       data[1] == MidiMessageUtils.REST_MESSAGE)
-                    {
-                        notifyPosition(_sequencer.getTickPosition());
-                    }
-                }
-					}
-					catch(Exception ep) {
-						ep.printStackTrace();
-					}
-					finally {
-						_lockObj.unlock();
-					}
-            });
+	            }
+	    	}
+        });
 
 		_sequencer.addMetaEventListener(new MetaEventListener() {
             @Override

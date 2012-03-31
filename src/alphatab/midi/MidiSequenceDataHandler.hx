@@ -29,6 +29,7 @@ class MidiSequenceDataHandler  implements MidiSequenceHandler
     public var commands(default, default):String;
     public var infoTrack:Int;
     public var metronomeTrack:Int;
+    public var timeTrack:Int;
 
 
     public function new(tracks:Int)
@@ -36,6 +37,7 @@ class MidiSequenceDataHandler  implements MidiSequenceHandler
         infoTrack = 0;
         _ticksSoFar=0;
         metronomeTrack = tracks - 1;
+        timeTrack = tracks;
         _commands = new Array<String>();
     }
     
